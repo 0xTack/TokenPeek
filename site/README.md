@@ -83,6 +83,11 @@ cd site
 
 ## 部署
 
+> GitHub Releases 会把资源名里的中文替换成 `.`，所以发布脚本使用 ASCII 资源名：
+> `DeepSeek-Dashboard-1.1-AppleSilicon.dmg` 等。本地构建产物仍是中文文件名，
+> `publish.sh` 会自动映射，并写入 `releases.js`。
+
+
 ### 方案 A：GitHub Pages + GitHub Releases（推荐）
 
 GitHub Pages 单个文件上限 100 MB，而 Windows 包约 153 MB，所以把安装包放到

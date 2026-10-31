@@ -67,7 +67,8 @@ const PLATFORMS = [
     arch: 'arm64',
     min: 'macOS 14 Sonoma 或更高',
     recommended: true,
-    stem: (version) => `DeepSeek仪表盘-${version}-AppleSilicon`,
+    sourceStem: (version) => `DeepSeek仪表盘-${version}-AppleSilicon`,
+    releaseStem: (version) => `DeepSeek-Dashboard-${version}-AppleSilicon`,
     sourceDir: MAC_DIST,
     types: ['dmg', 'zip'],
   },
@@ -78,7 +79,8 @@ const PLATFORMS = [
     arch: 'x86_64',
     min: 'macOS 13 Ventura 或更高',
     recommended: false,
-    stem: (version) => `DeepSeek仪表盘-${version}-Intel`,
+    sourceStem: (version) => `DeepSeek仪表盘-${version}-Intel`,
+    releaseStem: (version) => `DeepSeek-Dashboard-${version}-Intel`,
     sourceDir: MAC_DIST,
     types: ['dmg', 'zip'],
   },
@@ -89,7 +91,8 @@ const PLATFORMS = [
     arch: 'x64',
     min: 'Windows 11 / Windows 10 21H2+',
     recommended: false,
-    stem: (version) => `DeepSeekDashboard-${version}-Windows-x64`,
+    sourceStem: (version) => `DeepSeekDashboard-${version}-Windows-x64`,
+    releaseStem: (version) => `DeepSeekDashboard-${version}-Windows-x64`,
     sourceDir: WIN_DIST,
     types: ['zip'],
   },
@@ -109,9 +112,10 @@ function collectPlatforms(data, versions, { copy, allowMissing }) {
     const files = [];
 
     for (const type of spec.types) {
-      const file = `${spec.stem(version)}.${type}`;
+      const sourceFile = `${spec.sourceStem(version)}.${type}`;
+      const file = `${spec.releaseStem(version)}.${type}`;
       const dest = path.join(DOWNLOAD_DIR, file);
-      const source = path.join(spec.sourceDir, file);
+      const source = path.join(spec.sourceDir, sourceFile);
 
       let target = null;
       if (fs.existsSync(source)) {
