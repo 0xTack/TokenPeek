@@ -616,6 +616,124 @@ h1 {
   max-height: none;
 }
 
+/* ---------- 状态栏 ---------- */
+.menubar-section {
+  padding-top: 0;
+  padding-bottom: 76px;
+}
+
+.menubar-card {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 44px;
+  align-items: center;
+  padding: 34px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+}
+
+.menubar-copy h2 {
+  margin: 10px 0 12px;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.22;
+  letter-spacing: -0.025em;
+}
+
+.menubar-copy p {
+  margin: 0;
+  max-width: 500px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.menubar-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menubar-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.strip-native {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.strip-native i {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.strip-native i:nth-child(2) {
+  width: 8px;
+  border-radius: 50%;
+}
+
+.strip-native i:nth-child(3) {
+  width: 16px;
+  height: 6px;
+  border-radius: 2px;
+}
+
+.strip-state {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+}
+
+.strip-state b {
+  font-weight: 600;
+}
+
+.strip-state em {
+  font-style: normal;
+  font-size: 10.5px;
+  color: var(--faint);
+}
+
+.ring {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: inline-block;
+}
+
+.ring.green {
+  color: #34c759;
+  box-shadow: 0 0 10px rgba(52, 199, 89, 0.55);
+}
+
+.ring.amber {
+  color: #ff9f0a;
+  box-shadow: 0 0 10px rgba(255, 159, 10, 0.5);
+}
+
+.ring.red {
+  color: #ff453a;
+  box-shadow: 0 0 10px rgba(255, 69, 58, 0.5);
+}
+
 /* ---------- 功能 ---------- */
 .features {
   display: grid;
@@ -1245,6 +1363,7 @@ body {
 
 .feature,
 .highlight,
+.menubar-card,
 .dl-card,
 .price-card,
 .step,
@@ -1353,6 +1472,11 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .menubar-card {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
   .trust-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1378,6 +1502,10 @@ body {
   .gallery,
   .download-note {
     grid-template-columns: 1fr;
+  }
+
+  .menubar-card {
+    padding: 24px;
   }
 
   .price-table {
