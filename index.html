@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DeepSeek 仪表盘 · 菜单栏里的 DeepSeek 用量与花费看板</title>
-  <meta name="description" content="DeepSeek 仪表盘：常驻菜单栏/托盘，显示高峰与空闲时段、Flash / Pro 官方人民币价格、今日/近 7 天/本月用量、缓存命中率，并统计本地模型省下的钱。支持 macOS 与 Windows。" />
+  <title>DeepSeek 仪表盘 · 菜单栏里的 DeepSeek 时段与用量看板</title>
+  <meta name="description" content="DeepSeek 仪表盘：常驻菜单栏/托盘，显示高峰与空闲时段、今日/近 7 天/本月 token 用量、缓存命中率，并单独统计本地模型。支持 macOS 与 Windows。" />
   <meta name="theme-color" content="#0b0f14" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="DeepSeek 仪表盘" />
-  <meta property="og:description" content="把 DeepSeek 的时段、用量和真实花费放进菜单栏。免费、本地运行、不上传数据。" />
+  <meta property="og:description" content="把 DeepSeek 的时段和 token 用量放进菜单栏。免费、开源、本地运行、不上传数据。" />
   <meta property="og:image" content="assets/screenshot-mac.png" />
   <link rel="icon" type="image/png" href="assets/icon.png" />
   <link rel="stylesheet" href="assets/style.css" />
@@ -27,7 +27,6 @@
         <a href="#menubar">状态栏</a>
         <a href="#features">功能</a>
         <a href="#screenshots">截图</a>
-        <a href="#pricing">价格</a>
         <a href="#download">下载</a>
         <a href="#changelog">更新日志</a>
       </nav>
@@ -43,10 +42,10 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <span class="pill"><span class="pill-dot"></span>Windows <span data-win-version>v1.3</span> · macOS <span data-mac-version>v1.1</span> 已发布 <span class="pill-free">免费开源</span></span>
-          <h1>把 DeepSeek 的<br /><span class="grad">时段与花费</span><br />放进菜单栏</h1>
+          <h1>把 DeepSeek 的<br /><span class="grad">时段与用量</span><br />放进菜单栏</h1>
           <p class="lede">
-            一个本地优先的桌面小工具：自动读取 OpenCode 用量，按官方人民币价格计算费用，
-            显示缓存命中率和本地模型省下的钱。点开菜单栏，今天花了多少一眼看清。
+            一个本地优先的桌面小工具：自动读取 OpenCode 用量，按官方口径统计 token 与缓存命中率，
+            并把本地模型单独列出。点开菜单栏，今天用了多少一眼看清。
           </p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#download">免费下载 macOS 版</a>
@@ -64,11 +63,11 @@
         <div class="hero-visual">
           <div class="shot-glow" aria-hidden="true"></div>
           <figure class="shot shot-mac">
-            <img src="assets/screenshot-mac.png" width="760" height="1400" alt="macOS 菜单栏面板：空闲时段、模型价格、本月用量、API Key 排行、缓存命中率与余额" />
+            <img src="assets/screenshot-mac.png?v=2" width="760" height="1020" alt="macOS 菜单栏面板：空闲时段、本月用量、API Key 排行、缓存命中率与余额" />
           </figure>
           <div class="float-stat" aria-hidden="true">
-            <span class="float-label">今日花费</span>
-            <strong>¥3.42</strong>
+            <span class="float-label">今日 tokens</span>
+            <strong>2,410 万</strong>
             <span class="float-sub">命中率 97.8%</span>
           </div>
         </div>
@@ -78,7 +77,7 @@
     <section class="trust" aria-label="产品特点">
       <div class="container trust-grid">
         <div class="trust-item"><span class="trust-icon">⌁</span><div><strong>本地优先</strong><span>只读本机数据，不上传</span></div></div>
-        <div class="trust-item"><span class="trust-icon">¥</span><div><strong>官方人民币价</strong><span>空闲与高峰并排显示</span></div></div>
+        <div class="trust-item"><span class="trust-icon">◐</span><div><strong>自动识别</strong><span>高峰 / 空闲不用自己记</span></div></div>
         <div class="trust-item"><span class="trust-icon">◷</span><div><strong>自然月统计</strong><span>每月 1 日重新计算</span></div></div>
         <div class="trust-item"><span class="trust-icon">◎</span><div><strong>三端可用</strong><span>Apple Silicon / Intel / Windows</span></div></div>
       </div>
@@ -99,7 +98,7 @@
               <div class="traffic-row"><span class="tl red"></span><span class="tl-label">红灯 · 余额不足</span></div>
             </div>
             <h3>红绿灯状态，扫一眼就知道</h3>
-            <p>绿色是空闲时段，橙色是高峰，红色代表官方余额低于 ¥5。不用打开网页查时间，也不用记价格表。</p>
+            <p>绿色是空闲时段，橙色是高峰，红色代表官方余额偏低。不用打开网页查时间，也不用记规则。</p>
           </article>
           <article class="highlight highlight-accent">
             <ul class="advice-list">
@@ -138,7 +137,7 @@
             </div>
             <div class="menubar-strip">
               <span class="strip-native"><i></i><i></i><i></i></span>
-              <span class="strip-state"><i class="ring red"></i><b>余额不足</b><em>低于 ¥5</em></span>
+              <span class="strip-state"><i class="ring red"></i><b>余额不足</b><em>官方余额</em></span>
             </div>
           </div>
         </div>
@@ -161,8 +160,8 @@
           </article>
           <article class="feature">
             <div class="ficon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 12-8 8-9-9V4h7l10 8Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg></div>
-            <h3>官方人民币价格</h3>
-            <p>Flash / Pro 两档，缓存命中、未命中、输出逐项列出；每月自动核对官方定价页。</p>
+            <h3>官方统计口径</h3>
+            <p>按 DeepSeek 官方口径统计 token 与缓存命中，自动区分高峰和空闲，不需要手动记规则。</p>
           </article>
           <article class="feature">
             <div class="ficon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
@@ -186,13 +185,13 @@
           </article>
           <article class="feature">
             <div class="ficon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="5"/><path d="M14 5.5A5 5 0 1 1 18 14M3 21h8M7 17v4"/></svg></div>
-            <h3>本地模型「已省」</h3>
-            <p>Ollama 等本地调用不产生 DeepSeek 费用，但会按同档价格折算，让你知道省了多少。</p>
+            <h3>本地模型单独统计</h3>
+            <p>Ollama 等本地调用单独列出，不产生云端消耗，也不会混进云端用量。</p>
           </article>
           <article class="feature">
             <div class="ficon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 15h2"/></svg></div>
-            <h3>余额与充值</h3>
-            <p>macOS 与 Windows 都支持官方 API Key 余额；低于 ¥5 变红提醒，充值按钮直达官方页面。</p>
+            <h3>余额提醒</h3>
+            <p>macOS 与 Windows 都支持官方 API Key 余额查询；余额偏低时状态灯变红，充值按钮直达官方页面。</p>
           </article>
           <article class="feature">
             <div class="ficon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 2-3 2M13 13h4"/></svg></div>
@@ -227,53 +226,9 @@
         </div>
         <div class="gallery single">
           <figure class="shot-card">
-            <div class="shot-frame"><img src="assets/screenshot-mac.png" width="760" height="1400" loading="lazy" alt="macOS 版本面板" /></div>
+            <div class="shot-frame"><img src="assets/screenshot-mac.png?v=2" width="760" height="1020" loading="lazy" alt="macOS 版本面板" /></div>
             <figcaption><strong>macOS</strong><span>菜单栏常驻 · 官方账户 / OpenCode / 自定义</span></figcaption>
           </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="pricing">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">API 价格参考</span>
-          <h2>DeepSeek API 的价格，不是软件的价格</h2>
-          <p>下表是 DeepSeek 官方 API 的 token 单价（元 / 百万 tokens），用来估算你在 DeepSeek 上的花费。本软件免费、MIT 开源，不代收、不加价。</p>
-        </div>
-        <div class="pricing-note">
-          <strong>先说明</strong>
-          <span>安装包免费下载。下方是 DeepSeek 收取的 API token 单价，不是本软件的售价；本工具只做本地统计和估算。</span>
-        </div>
-        <div class="price-card">
-          <table class="price-table">
-            <thead>
-              <tr>
-                <th scope="col">DeepSeek API 模型</th>
-                <th scope="col">缓存命中<span>空闲 / 高峰</span></th>
-                <th scope="col">缓存未命中<span>空闲 / 高峰</span></th>
-                <th scope="col">输出<span>空闲 / 高峰</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row"><strong>deepseek-flash</strong><span>日常高性价比</span></th>
-                <td>¥0.02 <i>/</i> ¥0.04</td>
-                <td>¥1.00 <i>/</i> ¥2.00</td>
-                <td>¥4.00 <i>/</i> ¥8.00</td>
-              </tr>
-              <tr>
-                <th scope="row"><strong>deepseek-v4-pro</strong><span>复杂任务</span></th>
-                <td>¥0.15 <i>/</i> ¥0.30</td>
-                <td>¥4.50 <i>/</i> ¥9.00</td>
-                <td>¥13.50 <i>/</i> ¥27.00</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="price-foot">
-            <span>价格来源：<a href="https://api-docs.deepseek.com/zh-cn/quick_start/pricing/" target="_blank" rel="noopener">DeepSeek 官方文档</a> · 费用由 DeepSeek 收取</span>
-            <span>缓存写入按未命中计 · 内置 2025–2026 法定节假日</span>
-          </div>
         </div>
       </div>
     </section>
@@ -324,7 +279,7 @@
             <span class="step-num">03</span>
             <h3>看数据</h3>
             <p>点菜单栏 / 托盘的图标。用 OpenCode 的会自动读取本机数据库；要看官方账户，点「登录官方账户」获取 Token。</p>
-            <p>没有 OpenCode 也能用「自定义 App」上报，或直接查看价格与时段。</p>
+            <p>没有 OpenCode 也能用「自定义 App」上报，或直接查看时段与用量。</p>
           </article>
         </div>
       </div>
@@ -349,7 +304,7 @@
         <div class="faq">
           <details>
             <summary>这个软件收费吗？</summary>
-            <p>不收费。代码以 MIT 协议开源，安装包免费下载。页面里的价格表是 DeepSeek 官方 API 的 token 单价，费用由 DeepSeek 收取；本工具只做本地统计和估算，不代收、不加价。</p>
+            <p>不收费。代码以 MIT 协议开源，安装包免费下载，所有功能都可以直接使用。</p>
           </details>
           <details>
             <summary>数据会上传到服务器吗？</summary>
@@ -357,7 +312,7 @@
           </details>
           <details>
             <summary>需要登录 DeepSeek 吗？</summary>
-            <p>不登录也能用：OpenCode 模式、价格表、时段和自定义上报都可用。macOS 的「官方 · 按 Key」需要网页登录 Token，用来读取所有客户端、所有 API Key 的官方用量与余额；Windows 版目前支持官方 API Key 余额，按 Key 用量还在适配中。</p>
+            <p>不登录也能用：OpenCode 模式、时段、用量统计和自定义上报都可用。macOS 的「官方 · 按 Key」需要网页登录 Token，用来读取所有客户端、所有 API Key 的官方用量与余额；Windows 版目前支持官方 API Key 余额，按 Key 用量还在适配中。</p>
           </details>
           <details>
             <summary>本月为什么不是最近 30 天？</summary>
@@ -365,7 +320,7 @@
           </details>
           <details>
             <summary>支持哪些模型？</summary>
-            <p>费用按 DeepSeek Flash / Pro 两档官方人民币价格计算。OpenCode 里的其他模型只统计 token；Ollama 等本地模型会按 DeepSeek 同档价格折算成「已省」，仅供参考。</p>
+            <p>Flash / Pro 两档按 DeepSeek 官方口径统计。OpenCode 里的其他模型只统计 token；Ollama 等本地模型单独列出，不混入云端用量。</p>
           </details>
           <details>
             <summary>Windows 版为什么这么大？</summary>
@@ -373,7 +328,7 @@
           </details>
           <details>
             <summary>怎么升级？数据会丢吗？</summary>
-            <p>下载新版本覆盖旧 App 即可。设置、价格缓存、自定义用量都在系统数据目录（macOS：<code>~/Library/Application Support/DeepSeekCost</code>；Windows：<code>%APPDATA%\DeepSeekCost</code>），不会随 App 删除。</p>
+            <p>下载新版本覆盖旧 App 即可。设置、缓存、自定义用量都在系统数据目录（macOS：<code>~/Library/Application Support/DeepSeekCost</code>；Windows：<code>%APPDATA%\DeepSeekCost</code>），不会随 App 删除。</p>
           </details>
         </div>
       </div>
@@ -392,7 +347,6 @@
         <a href="#features">功能</a>
         <a href="#download">下载</a>
         <a href="#changelog">更新日志</a>
-        <a href="https://api-docs.deepseek.com/zh-cn/quick_start/pricing/" target="_blank" rel="noopener">价格来源</a>
       </div>
       <p class="footer-note">免费 · MIT 开源 · 本地运行 · 不上传数据 · 与 DeepSeek 官方无隶属关系</p>
     </div>

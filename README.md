@@ -5,14 +5,13 @@
 
 ```
 site/
-  index.html              页面内容（功能、价格、FAQ）
+  index.html              页面内容（功能、FAQ）
   assets/
     style.css             样式
     app.js                渲染下载卡片、校验值复制、更新日志、二维码弹层
     releases.js           版本、下载文件、SHA-256、更新日志（发布脚本生成）
     icon.png
     screenshot-mac.png
-    screenshot-win.png
   downloads/              当前版本的安装包
   tools/publish.mjs       发布脚本
   publish.sh              发布脚本入口
@@ -130,7 +129,7 @@ Cloudflare Pages 单文件上限 25 MB，Windows 包同样需要放 R2：
 ## 自定义
 
 - **图标**：替换 `assets/icon.png`（建议 256×256）
-- **截图**：替换 `assets/screenshot-mac.png` / `screenshot-win.png`
+- **截图**：替换 `assets/screenshot-mac.png`
 - **社交分享图**：`index.html` 里的 `og:image` 目前是相对路径。部署后建议改成
   完整 URL，例如 `https://your.domain/assets/screenshot-mac.png`
 - **自定义域名**：加 `CNAME` 文件（GitHub Pages）或在托管平台绑定域名
