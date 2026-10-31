@@ -19,14 +19,14 @@ window.DEEPSEEK_RELEASE = {
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "DeepSeek仪表盘-1.1-AppleSilicon.dmg",
+          "file": "DeepSeek-Dashboard-1.1-AppleSilicon.dmg",
           "size": "1.3 MB",
           "sha256": "06c61186a27e988a778390a0b2fef452d2e76d268e94c4689a0b20908b2dfe34"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "DeepSeek仪表盘-1.1-AppleSilicon.zip",
+          "file": "DeepSeek-Dashboard-1.1-AppleSilicon.zip",
           "size": "1008 KB",
           "sha256": "26466f09f1d318dbc129a8a63e50b6ac3e9f52cb8692f91fb4a4a2bc3c0f9cf0"
         }
@@ -44,14 +44,14 @@ window.DEEPSEEK_RELEASE = {
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "DeepSeek仪表盘-1.1-Intel.dmg",
+          "file": "DeepSeek-Dashboard-1.1-Intel.dmg",
           "size": "1.4 MB",
           "sha256": "4b6728d5c619f0edc5a388092e32229710291fb6919cc491d3358da3bc7376b5"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "DeepSeek仪表盘-1.1-Intel.zip",
+          "file": "DeepSeek-Dashboard-1.1-Intel.zip",
           "size": "1.0 MB",
           "sha256": "103a153877057d45f1ebadae44afefa7b817c779ccd2e96c4a68b8eb9ab2d702"
         }
