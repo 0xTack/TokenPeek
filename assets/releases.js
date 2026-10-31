@@ -5,7 +5,7 @@ window.DEEPSEEK_RELEASE = {
     "mac": "1.1",
     "windows": "1.3"
   },
-  "base": "downloads/",
+  "base": "https://github.com/xiaoan223/deepseek-dashboard/releases/download/v1.3/",
   "downloads": [
     {
       "id": "mac-arm64",
