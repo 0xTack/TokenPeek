@@ -123,6 +123,14 @@ curl https://api.deepseek.com/user/balance \
 
 然后在「我的用量」里选「自定义 App」，就能看到总计、App 用量 Top 3、缓存命中率和每日趋势。
 
+## macOS 打不开？
+
+如果提示「无法验证开发者」或「已损坏，应移到废纸篓」，**先不要删除 App**。
+
+详细步骤见 [macOS 打开说明](docs/macOS-打开说明.md)，在线版：
+
+<https://xiaoan223.github.io/deepseek-dashboard/macos-open.html>
+
 ## 编译安装
 
 ```bash

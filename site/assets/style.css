@@ -1479,6 +1479,157 @@ body {
   }
 }
 
+/* ---------- 说明文档 ---------- */
+.doc-page {
+  padding: 56px 0 96px;
+}
+
+.doc-back {
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.doc-back a {
+  color: var(--muted);
+}
+
+.doc-back a:hover {
+  color: var(--text);
+}
+
+.doc {
+  max-width: 780px;
+}
+
+.doc .eyebrow {
+  margin-bottom: 4px;
+}
+
+.doc h1 {
+  margin: 8px 0 16px;
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.doc-lead {
+  margin: 0 0 22px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.doc h2 {
+  margin: 38px 0 10px;
+  font-size: 22px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.doc h3 {
+  margin: 24px 0 6px;
+  font-size: 15.5px;
+  font-weight: 650;
+}
+
+.doc p,
+.doc li {
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+
+.doc ol,
+.doc ul {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+
+.doc li {
+  margin: 5px 0;
+}
+
+.doc li::marker {
+  color: var(--faint);
+}
+
+.doc strong {
+  color: var(--text);
+}
+
+.doc pre {
+  margin: 12px 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.28);
+  overflow-x: auto;
+}
+
+.doc pre code {
+  display: block;
+  padding: 0;
+  background: none;
+  color: #d7e2f2;
+  font-size: 12.5px;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.doc .callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 18px 0 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.doc .callout strong {
+  flex: none;
+}
+
+.doc .callout span {
+  color: var(--muted);
+}
+
+.doc .callout.warn {
+  border: 1px solid rgba(255, 69, 58, 0.3);
+  background: rgba(255, 69, 58, 0.07);
+}
+
+.doc .callout.warn strong {
+  color: #ff8a80;
+}
+
+.doc-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 760px) {
+  .doc-page {
+    padding: 40px 0 72px;
+  }
+
+  .doc h2 {
+    margin-top: 32px;
+    font-size: 20px;
+  }
+
+  .doc-lead {
+    font-size: 15px;
+  }
+}
+
 /* ---------- 响应式 ---------- */
 @media (max-width: 980px) {
   .hero-grid {
