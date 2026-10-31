@@ -1,0 +1,34 @@
+# 构建产物
+build/
+dist/
+windows/release/
+windows/dist/
+windows/node_modules/
+windows/vendor/
+site/downloads/
+
+# 个人赞赏码：只在本机构建 / 发布时注入，不进入仓库
+donation-qr.png
+donation-qr-full.jpg
+windows/assets/donation-qr.png
+
+# 生成资源（构建时重新生成）
+windows/assets/icon.ico
+windows/assets/tray-*.png
+.icon-tmp/
+
+# 运行时数据（正常不会出现在仓库里，保险起见）
+platform-token
+custom-usage.jsonl
+pricing.json
+settings.json
+api-key
+*.db
+last-*.txt
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

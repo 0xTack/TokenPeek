@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;" />
+  <title>DeepSeek 仪表盘</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="panel">
+    <header class="header">
+      <div class="header-main">
+        <div class="status-line">
+          <span id="status-dot" class="dot"></span>
+          <span id="status-title" class="status-title">空闲时段</span>
+          <span id="status-badge" class="badge">5 折</span>
+          <span class="spacer"></span>
+          <button id="close" class="icon-button" title="关闭面板" aria-label="关闭面板">✕</button>
+        </div>
+        <div id="countdown" class="countdown">正在读取…</div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="section-head">
+        <span class="section-title">模型价格</span>
+        <div id="tier" class="segmented"></div>
+      </div>
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th class="left">元 / 百万 tokens</th>
+            <th>空闲</th>
+            <th>高峰</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left">缓存命中</td>
+            <td id="price-hit-off"></td>
+            <td id="price-hit-peak"></td>
+          </tr>
+          <tr>
+            <td class="left">缓存未命中</td>
+            <td id="price-miss-off"></td>
+            <td id="price-miss-peak"></td>
+          </tr>
+          <tr>
+            <td class="left">输出</td>
+            <td id="price-output-off"></td>
+            <td id="price-output-peak"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="meta-line">
+        <span id="price-model">deepseek-flash · 人民币</span>
+        <span id="price-updated" class="muted"></span>
+        <button id="price-refresh" class="icon-button small" title="立即检查官方定价">↻</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <span class="section-title">官方余额</span>
+        <span id="balance-tag" class="balance-tag hidden">API Key</span>
+        <span class="spacer"></span>
+        <button id="balance-refresh" class="icon-button small hidden" title="刷新官方余额">↻</button>
+      </div>
+      <div id="balance-body" class="balance-body"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head usage-head">
+        <span class="section-title">我的用量</span>
+        <div class="select-wrap">
+          <button id="source" class="select select-button" type="button" title="数据源"></button>
+          <div id="source-menu" class="select-menu hidden"></div>
+        </div>
+        <div class="select-wrap">
+          <button id="period" class="select select-button" type="button" title="统计区间"></button>
+          <div id="period-menu" class="select-menu hidden"></div>
+        </div>
+        <button id="refresh" class="icon-button small" title="刷新用量">↻</button>
+      </div>
+      <div id="usage-body" class="usage-body"></div>
+    </section>
+
+    <footer class="footer">
+      <div id="note" class="note"></div>
+      <div class="footer-row">
+        <button id="open-folder" class="text-button">数据文件夹</button>
+        <button id="price-link" class="text-button">价格来源</button>
+        <button id="local-open" class="text-button">本地接口</button>
+        <span class="spacer"></span>
+        <button id="quit" class="text-button danger">退出</button>
+      </div>
+      <div class="peak-hint">高峰：周一至周五 9:00–12:00、14:00–18:00（北京时间，法定节假日除外）</div>
+    </footer>
+
+    <section class="donation">
+      <button id="support" class="support">☕ 请我喝杯咖啡</button>
+    </section>
+  </div>
+
+  <div id="donation-modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-title">请我喝杯咖啡</div>
+      <img src="../../assets/donation-qr.png" alt="微信赞赏码" />
+      <div class="modal-hint">微信扫码 · 感谢支持</div>
+      <div class="modal-name">微信赞赏码</div>
+    </div>
+  </div>
+
+  <div id="local-modal" class="modal hidden">
+    <div class="modal-card config-card">
+      <div class="modal-title">本地接口</div>
+      <div class="config-hint">自动发现本机 App 用量；也可指定本地文件/目录或内网 HTTP 地址。</div>
+      <label class="config-label" for="local-file">文件或目录</label>
+      <input id="local-file" class="key-input config-input" placeholder="C:\Users\...\.claude\projects" autocomplete="off" spellcheck="false" />
+      <label class="config-label" for="local-url">本地 HTTP 地址</label>
+      <input id="local-url" class="key-input config-input" placeholder="http://127.0.0.1:8080/usage" autocomplete="off" spellcheck="false" />
+      <div class="config-actions">
+        <button id="local-save" class="primary-button">保存并检测</button>
+        <button id="local-clear" class="link-button">清除</button>
+      </div>
+      <div id="local-status" class="config-status"></div>
+      <div id="local-detections" class="config-list"></div>
+      <div id="local-collector" class="config-note"></div>
+      <div class="config-hint">收集接口只监听本机。向 <span class="mono">POST /usage</span> 发 JSON，字段支持 hit / miss / output，或 input_tokens / output_tokens 等。</div>
+      <button id="local-close" class="text-button config-close">关闭</button>
+    </div>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

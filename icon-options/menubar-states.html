@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; padding: 36px 40px 46px; background: #17191d; color: #f5f5f7;
+         font-family: -apple-system, "SF Pro Text", "PingFang SC", sans-serif; }
+  h1 { font-size: 24px; margin: 0 0 6px; }
+  .sub { color: #a1a1a6; font-size: 13px; margin: 0 0 26px; }
+  .card { background: #202328; border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 13px; font-weight: 600; color: #d1d1d6; margin: 0 0 13px; }
+  .bar { height: 44px; border-radius: 10px; display: flex; align-items: center;
+         gap: 20px; padding: 0 16px; font-size: 12px; }
+  .bar.light { background: #e9e7e2; color: #1d1d1f; }
+  .bar.dark  { background: #2c2c2e; color: #f5f5f7; }
+  .spacer { flex: 1; }
+  .item { display: inline-flex; align-items: center; gap: 6px; }
+  .ring { width: 13px; height: 13px; border-radius: 50%; box-sizing: border-box; border: 2px solid; }
+  .green  { border-color: #30d158; }
+  .orange { border-color: #ff9f0a; }
+  .red    { border-color: #ff453a; }
+  .time { font-variant-numeric: tabular-nums; opacity: .8; }
+  .big-row { display: flex; gap: 54px; align-items: flex-start; padding: 8px 4px 2px; }
+  .big-item { text-align: center; width: 120px; }
+  .big-ring { width: 52px; height: 52px; border-radius: 50%; box-sizing: border-box;
+              border: 8px solid; margin: 0 auto 12px; }
+  .big-label { font-size: 13px; font-weight: 600; }
+  .big-sub { font-size: 11px; color: #8e8e93; margin-top: 4px; line-height: 1.45; }
+  .priority { margin-top: 6px; padding: 14px 16px; border-radius: 10px; background: #262a2f;
+              color: #a1a1a6; font-size: 12px; line-height: 1.7; }
+  code { color: #f5f5f7; background: #34383e; padding: 1px 5px; border-radius: 4px; }
+  .legend { display: flex; gap: 30px; margin-top: 6px; font-size: 12px; color: #a1a1a6; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .dot.g { background: #30d158; } .dot.o { background: #ff9f0a; } .dot.r { background: #ff453a; }
+</style>
+</head>
+<body>
+  <h1>菜单栏图标状态</h1>
+  <p class="sub">一共三种颜色。实际尺寸：13px 空心圆、2px 描边。</p>
+
+  <div class="card">
+    <h2>实际大小 · 浅色菜单栏</h2>
+    <div class="bar light">
+      <span class="item"><span class="ring green"></span>空闲</span>
+      <span class="item"><span class="ring orange"></span>高峰</span>
+      <span class="item"><span class="ring red"></span>余额 &lt; ¥5</span>
+      <span class="spacer"></span>
+      <span class="time">10月31日 周六 11:45</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>实际大小 · 深色菜单栏</h2>
+    <div class="bar dark">
+      <span class="item"><span class="ring green"></span>空闲</span>
+      <span class="item"><span class="ring orange"></span>高峰</span>
+      <span class="item"><span class="ring red"></span>余额 &lt; ¥5</span>
+      <span class="spacer"></span>
+      <span class="time">10月31日 周六 11:45</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>放大 4 倍</h2>
+    <div class="big-row">
+      <div class="big-item">
+        <div class="big-ring green"></div>
+        <div class="big-label">空闲</div>
+        <div class="big-sub">余额正常<br>非高峰时段</div>
+      </div>
+      <div class="big-item">
+        <div class="big-ring orange"></div>
+        <div class="big-label">高峰</div>
+        <div class="big-sub">余额正常<br>工作日 9–12 / 14–18</div>
+      </div>
+      <div class="big-item">
+        <div class="big-ring red"></div>
+        <div class="big-label">余额不足</div>
+        <div class="big-sub">余额 &lt; ¥5<br>优先级最高</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><span class="dot g"></span>#30D158 绿</span>
+      <span><span class="dot o"></span>#FF9F0A 橙</span>
+      <span><span class="dot r"></span>#FF453A 红</span>
+    </div>
+  </div>
+
+  <div class="priority">
+    优先级：<code>余额 &lt; ¥5</code> → 红色，覆盖高峰/空闲；
+    <code>高峰</code> → 橙色；<code>其余</code> → 绿色。<br>
+    图标本身始终是空心圆，不带文字；具体状态可以在鼠标悬停提示里看到。
+  </div>
+</body>
+</html>
