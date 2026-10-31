@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 380px; height: 780px; overflow: hidden; }
+  body {
+    font-family: "PingFang SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    color: #1c1c1e;
+    background:
+      radial-gradient(300px 260px at 12% 8%, #8ea8ff 0%, transparent 70%),
+      radial-gradient(300px 300px at 92% 18%, #6fe0b0 0%, transparent 68%),
+      radial-gradient(340px 340px at 70% 100%, #f6b6d8 0%, transparent 70%),
+      linear-gradient(145deg, #eef2ff 0%, #e6f8f1 48%, #fdf0f7 100%);
+    padding: 0;
+  }
+  .window {
+    width: 380px;
+    height: 780px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(30px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 24px 70px rgba(40,60,110,.28);
+    display: flex;
+    flex-direction: column;
+  }
+  .titlebar {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-bottom: 1px solid rgba(0,0,0,.07);
+    background: rgba(255,255,255,.25);
+    flex: none;
+  }
+  .lights { display: flex; gap: 6px; }
+  .lights i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+  .lights i:nth-child(1) { background: #ff5f57; }
+  .lights i:nth-child(2) { background: #febc2e; }
+  .lights i:nth-child(3) { background: #28c840; }
+  .titlebar span { flex: 1; text-align: center; font-size: 11px; font-weight: 600; color: #5b5b60; margin-right: 30px; }
+  .header { padding: 12px 16px 10px; border-bottom: 1px solid rgba(0,0,0,.07); flex: none; }
+  .status { display: flex; align-items: center; gap: 7px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #34c759; box-shadow: 0 0 0 3px rgba(52,199,89,.14); }
+  .status b { font-size: 17px; font-weight: 600; letter-spacing: .2px; }
+  .tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; background: rgba(52,199,89,.15); color: #1f9d55; }
+  .x { margin-left: auto; font-size: 15px; color: #a3a3a8; }
+  .count { margin-top: 5px; font-size: 10.5px; color: #6e6e73; }
+  .sec { padding: 11px 16px 10px; border-bottom: 1px solid rgba(0,0,0,.07); flex: none; }
+  .sec-head { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; }
+  .sec-title { font-size: 12px; font-weight: 600; color: #6e6e73; }
+  .seg { margin-left: auto; display: flex; padding: 2px; border-radius: 7px; background: rgba(0,0,0,.06); }
+  .seg b, .seg span { font-size: 11px; padding: 3px 12px; border-radius: 5px; }
+  .seg b { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.12); font-weight: 600; }
+  .seg span { color: #6e6e73; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th { font-size: 10px; font-weight: 500; color: #9a9aa0; padding: 2px 0 4px; text-align: right; width: 72px; }
+  th:first-child { text-align: left; width: auto; }
+  td { font-size: 12px; padding: 3.5px 0; text-align: right; font-family: "SF Mono", Consolas, monospace; }
+  td:first-child { text-align: left; font-family: inherit; }
+  th.off, td.off { color: #6e6e73; }
+  th.on, td.on { color: #1c1c1e; font-weight: 600; }
+  .meta { display: flex; gap: 5px; margin-top: 6px; font-size: 9.5px; color: #9a9aa0; }
+  .meta span:last-child { margin-left: auto; }
+  .select { font-size: 10.5px; background: rgba(0,0,0,.05); border-radius: 6px; padding: 3px 7px; color: #3a3a3c; }
+  .refresh { margin-left: auto; color: #9a9aa0; font-size: 12px; }
+  .rows { display: flex; flex-direction: column; gap: 4px; }
+  .row { display: flex; align-items: baseline; gap: 8px; }
+  .row .label { width: 104px; flex: none; font-size: 10.5px; color: #6e6e73; }
+  .row .money { font-size: 12.5px; font-weight: 600; font-family: "SF Mono", Consolas, monospace; }
+  .row .tokens { margin-left: auto; font-size: 10px; color: #9a9aa0; font-variant-numeric: tabular-nums; }
+  .saved { display: flex; gap: 5px; align-items: baseline; padding: 2px 0 1px; font-size: 10px; color: #6e6e73; }
+  .saved b { color: #1f9d55; font-weight: 600; }
+  .saved em { font-style: normal; font-size: 8px; color: #9a9aa0; }
+  .subhead { margin-top: 5px; font-size: 9px; font-weight: 600; color: #9a9aa0; }
+  .entry { display: flex; align-items: baseline; gap: 7px; margin-top: 3px; }
+  .entry .rank { width: 12px; flex: none; font-size: 9px; font-weight: 700; color: #6e6e73; }
+  .entry .rank.first { color: #d97706; }
+  .entry .name { font-size: 10.5px; }
+  .entry .rate { margin-left: auto; font-size: 9.5px; font-weight: 600; color: #1f9d55; font-family: "SF Mono", Consolas, monospace; }
+  .entry .money { font-size: 11px; font-weight: 600; font-family: "SF Mono", Consolas, monospace; width: 58px; text-align: right; }
+  .entry .tok { width: 62px; text-align: right; font-size: 9.5px; color: #9a9aa0; }
+  .more { margin-top: 3px; font-size: 9.5px; color: #0a84ff; }
+  .rate-head { display: flex; align-items: baseline; margin-top: 8px; padding-top: 7px; border-top: 1px solid rgba(0,0,0,.07); font-size: 11px; color: #6e6e73; }
+  .rate-head b { margin-left: auto; font-size: 16px; color: #1f9d55; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bar { height: 5px; border-radius: 3px; background: rgba(0,0,0,.07); overflow: hidden; margin-top: 5px; }
+  .bar i { display: block; height: 100%; border-radius: 3px; background: #34c759; }
+  .advice { margin-top: 5px; font-size: 10px; line-height: 1.45; color: #6e6e73; }
+  .days { display: flex; gap: 4px; margin-top: 7px; }
+  .day { flex: 1; text-align: center; }
+  .day span { display: block; font-size: 8px; color: #9a9aa0; }
+  .day i { display: block; margin: 2px 0; border-radius: 2px; background: #34c759; }
+  .day.today span:last-child { color: #1c1c1e; font-weight: 600; }
+  .balance { display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-bottom: 1px solid rgba(0,0,0,.07); font-size: 10px; color: #6e6e73; }
+  .balance b { font-size: 12px; font-family: "SF Mono", Consolas, monospace; color: #1c1c1e; }
+  .balance .recharge { margin-left: auto; font-size: 10px; padding: 3px 10px; border-radius: 6px; background: rgba(0,0,0,.06); color: #3a3a3c; }
+  .footer { padding: 8px 16px 7px; font-size: 9px; line-height: 1.5; color: #9a9aa0; }
+  .footer .link { color: #0a84ff; }
+  .support { margin-top: auto; padding: 8px 16px; border-top: 1px solid rgba(0,0,0,.07); text-align: center; font-size: 10.5px; color: #0a84ff; }
+
+  /* 只保留上半部分：隐藏页脚与打赏行 */
+  .footer, .support { display: none; }
+  html, body { height: 700px; }
+  .window { height: 700px; }
+</style>
+</head>
+<body>
+  <div class="window">
+    <div class="titlebar">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <span>DeepSeek 仪表盘</span>
+    </div>
+
+    <div class="header">
+      <div class="status">
+        <span class="dot"></span><b>空闲时段</b><span class="tag">5 折</span><span class="x">×</span>
+      </div>
+      <div class="count">距离 高峰 周一 09:00 · 1 天 20 小时 3 分</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="sec-title">模型价格</span>
+        <div class="seg"><b>Flash</b><span>Pro</span></div>
+      </div>
+      <table>
+        <tr><th>元 / 百万 tokens</th><th class="off">空闲</th><th class="on">高峰</th></tr>
+        <tr><td>缓存命中</td><td class="off">¥0.02</td><td class="on">¥0.04</td></tr>
+        <tr><td>缓存未命中</td><td class="off">¥1.00</td><td class="on">¥2.00</td></tr>
+        <tr><td>输出</td><td class="off">¥4.00</td><td class="on">¥8.00</td></tr>
+      </table>
+      <div class="meta"><span>deepseek-flash · 人民币</span><span>价格 2026-10-31</span></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="sec-title">我的用量</span>
+        <span class="select">官方 · 按 Key</span>
+        <span class="select">本月</span>
+        <span class="refresh">↻</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="label">今日</span><b class="money">¥3.42</b><span class="tokens">2,410 万 tokens</span></div>
+        <div class="row"><span class="label">近 7 天</span><b class="money">¥18.60</b><span class="tokens">1.02 亿 tokens</span></div>
+        <div class="row"><span class="label">本月</span><b class="money">¥28.76</b><span class="tokens">1.63 亿 tokens</span></div>
+        <div class="row"><span class="label">全部</span><b class="money">¥64.20</b><span class="tokens">3.28 亿 tokens</span></div>
+      </div>
+      <div class="saved">本地模型已省 <b>¥0.86</b> <em>按 Flash 价</em></div>
+
+      <div class="subhead">API Key 用量 · 本月</div>
+      <div class="entry"><span class="rank first">1</span><span class="name">生产环境</span><span class="rate">99.8%</span><span class="money">¥12.84</span><span class="tok">6,120 万</span></div>
+      <div class="entry"><span class="rank">2</span><span class="name">本地脚本</span><span class="rate">98.6%</span><span class="money">¥9.12</span><span class="tok">4,230 万</span></div>
+      <div class="entry"><span class="rank">3</span><span class="name">写作助手</span><span class="rate">96.2%</span><span class="money">¥4.36</span><span class="tok">1,980 万</span></div>
+      <div class="more">展开全部 5 个</div>
+
+      <div class="rate-head">缓存命中率 <b>97.8%</b></div>
+      <div class="bar"><i style="width:97.8%"></i></div>
+      <div class="advice">命中率 97.8%：缓存利用良好。继续在同一会话追问，尽量别改动开头的大段上下文。</div>
+      <div class="days">
+        <div class="day"><span>82%</span><i style="height:24px"></i><span>日</span></div>
+        <div class="day"><span>88%</span><i style="height:26px"></i><span>一</span></div>
+        <div class="day"><span>91%</span><i style="height:27px"></i><span>二</span></div>
+        <div class="day"><span>96%</span><i style="height:29px"></i><span>三</span></div>
+        <div class="day"><span>97%</span><i style="height:29px"></i><span>四</span></div>
+        <div class="day"><span>99%</span><i style="height:30px"></i><span>五</span></div>
+        <div class="day today"><span>98%</span><i style="height:30px"></i><span>六</span></div>
+      </div>
+    </div>
+
+    <div class="balance"><span>余额</span><b>¥128.00</b><span class="recharge">充值</span><span class="refresh">↻</span></div>
+
+    <div class="footer">
+      高峰：周一至周五 9:00–12:00、14:00–18:00（北京时间，法定节假日除外）<br />
+      工作日其余时段、周六周日及法定节假日全天为空闲，价格为高峰的 5 折。<br />
+      <span class="link">价格来源：DeepSeek 官方文档</span>
+    </div>
+    <div class="support">☕ 请我喝杯咖啡</div>
+  </div>
+</body>
+</html>

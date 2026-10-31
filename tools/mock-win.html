@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 400px; height: 780px; overflow: hidden; }
+  body {
+    font-family: "PingFang SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    color: #1c1c1e;
+    background:
+      radial-gradient(320px 280px at 10% 6%, #8ea8ff 0%, transparent 70%),
+      radial-gradient(320px 320px at 94% 14%, #64ddb2 0%, transparent 68%),
+      radial-gradient(360px 360px at 72% 100%, #f4b7d6 0%, transparent 70%),
+      linear-gradient(145deg, #eef2ff 0%, #e7f8f2 48%, #fdf0f7 100%);
+  }
+  .window {
+    width: 400px;
+    height: 780px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(30px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 24px 70px rgba(40,60,110,.28);
+    display: flex;
+    flex-direction: column;
+  }
+  .titlebar {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    border-bottom: 1px solid rgba(0,0,0,.07);
+    background: rgba(255,255,255,.22);
+    flex: none;
+  }
+  .titlebar span { font-size: 10.5px; font-weight: 600; color: #5b5b60; }
+  .titlebar .x { margin-left: auto; font-size: 14px; color: #a3a3a8; }
+  .header { padding: 11px 16px 9px; border-bottom: 1px solid rgba(0,0,0,.07); flex: none; }
+  .status { display: flex; align-items: center; gap: 7px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #34c759; box-shadow: 0 0 0 3px rgba(52,199,89,.14); }
+  .status b { font-size: 17px; font-weight: 600; }
+  .tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; background: rgba(52,199,89,.15); color: #1f9d55; }
+  .count { margin-top: 5px; font-size: 10.5px; color: #6e6e73; }
+  .sec { padding: 10px 16px 9px; border-bottom: 1px solid rgba(0,0,0,.07); flex: none; }
+  .sec-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .sec-title { font-size: 12px; font-weight: 600; color: #6e6e73; }
+  .seg { margin-left: auto; display: flex; padding: 2px; border-radius: 7px; background: rgba(0,0,0,.06); }
+  .seg b, .seg span { font-size: 11px; padding: 3px 12px; border-radius: 5px; }
+  .seg b { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.12); font-weight: 600; }
+  .seg span { color: #6e6e73; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th { font-size: 10px; font-weight: 500; color: #9a9aa0; padding: 2px 0 4px; text-align: right; width: 74px; }
+  th:first-child { text-align: left; width: auto; }
+  td { font-size: 12px; padding: 3.5px 0; text-align: right; font-family: "SF Mono", Consolas, monospace; }
+  td:first-child { text-align: left; font-family: inherit; }
+  td.off { color: #6e6e73; }
+  td.on { color: #1c1c1e; font-weight: 600; }
+  .meta { display: flex; gap: 5px; margin-top: 5px; font-size: 9.5px; color: #9a9aa0; }
+  .meta span:last-child { margin-left: auto; }
+  .balance-tag { font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 20px; background: rgba(10,132,255,.12); color: #0a6cd0; }
+  .balance-row { display: flex; align-items: baseline; gap: 8px; }
+  .balance-row b { font-size: 17px; font-family: "SF Mono", Consolas, monospace; }
+  .balance-row span { font-size: 10px; color: #9a9aa0; }
+  .balance-row .refresh { margin-left: auto; color: #9a9aa0; font-size: 12px; }
+  .select { font-size: 10.5px; background: rgba(0,0,0,.05); border-radius: 6px; padding: 3px 7px; color: #3a3a3c; }
+  .refresh { margin-left: auto; color: #9a9aa0; font-size: 12px; }
+  .rows { display: flex; flex-direction: column; gap: 3.5px; }
+  .row { display: flex; align-items: baseline; gap: 8px; }
+  .row .label { width: 104px; flex: none; font-size: 10.5px; color: #6e6e73; }
+  .row .money { font-size: 12.5px; font-weight: 600; font-family: "SF Mono", Consolas, monospace; }
+  .row .tokens { margin-left: auto; font-size: 10px; color: #9a9aa0; font-variant-numeric: tabular-nums; }
+  .saved { display: flex; gap: 5px; align-items: baseline; padding: 2px 0 1px; font-size: 10px; color: #6e6e73; }
+  .saved b { color: #1f9d55; font-weight: 600; }
+  .saved em { font-style: normal; font-size: 8px; color: #9a9aa0; }
+  .subhead { margin-top: 4px; font-size: 9px; font-weight: 600; color: #9a9aa0; }
+  .entry { display: flex; align-items: baseline; gap: 7px; margin-top: 3px; }
+  .entry .rank { width: 12px; flex: none; font-size: 9px; font-weight: 700; color: #6e6e73; }
+  .entry .rank.first { color: #d97706; }
+  .entry .name { font-size: 10.5px; }
+  .entry .prov { font-size: 8px; color: #9a9aa0; }
+  .entry .money { margin-left: auto; font-size: 11px; font-weight: 600; font-family: "SF Mono", Consolas, monospace; }
+  .entry .tok { width: 62px; text-align: right; font-size: 9.5px; color: #9a9aa0; }
+  .more { margin-top: 3px; font-size: 9.5px; color: #0a84ff; }
+  .rate-head { display: flex; align-items: baseline; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,.07); font-size: 11px; color: #6e6e73; }
+  .rate-head b { margin-left: auto; font-size: 16px; color: #1f9d55; font-weight: 600; }
+  .bar { height: 5px; border-radius: 3px; background: rgba(0,0,0,.07); overflow: hidden; margin-top: 5px; }
+  .bar i { display: block; height: 100%; border-radius: 3px; background: #34c759; }
+  .advice { margin-top: 4px; font-size: 10px; line-height: 1.45; color: #6e6e73; }
+  .days { display: flex; gap: 4px; margin-top: 6px; }
+  .day { flex: 1; text-align: center; }
+  .day span { display: block; font-size: 8px; color: #9a9aa0; }
+  .day i { display: block; margin: 2px 0; border-radius: 2px; background: #34c759; }
+  .day.today span:last-child { color: #1c1c1e; font-weight: 600; }
+  .footer { padding: 7px 16px 6px; font-size: 9px; line-height: 1.5; color: #9a9aa0; }
+  .footer .link { color: #0a84ff; }
+  .support { margin-top: auto; padding: 7px 16px; border-top: 1px solid rgba(0,0,0,.07); text-align: center; font-size: 10.5px; color: #0a84ff; }
+</style>
+</head>
+<body>
+  <div class="window">
+    <div class="titlebar"><span>DeepSeek 仪表盘 · Windows</span><span class="x">✕</span></div>
+
+    <div class="header">
+      <div class="status">
+        <span class="dot"></span><b>空闲时段</b><span class="tag">5 折</span>
+      </div>
+      <div class="count">距离 高峰 周一 09:00 · 1 天 19 小时 42 分</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="sec-title">模型价格</span>
+        <div class="seg"><b>Flash</b><span>Pro</span></div>
+      </div>
+      <table>
+        <tr><th>元 / 百万 tokens</th><th>空闲</th><th>高峰</th></tr>
+        <tr><td>缓存命中</td><td class="off">¥0.02</td><td class="on">¥0.04</td></tr>
+        <tr><td>缓存未命中</td><td class="off">¥1.00</td><td class="on">¥2.00</td></tr>
+        <tr><td>输出</td><td class="off">¥4.00</td><td class="on">¥8.00</td></tr>
+      </table>
+      <div class="meta"><span>deepseek-flash · 人民币</span><span>价格 2026-10-31</span></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="sec-title">官方余额</span>
+        <span class="balance-tag">API Key</span>
+        <span class="refresh">↻</span>
+      </div>
+      <div class="balance-row"><b>¥128.00</b><span>充值 ¥108.00 · 赠送 ¥20.00</span></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="sec-title">我的用量</span>
+        <span class="select">OpenCode · 全部</span>
+        <span class="select">本月</span>
+        <span class="refresh">↻</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="label">今日</span><b class="money">¥2.18</b><span class="tokens">1,860 万 tokens</span></div>
+        <div class="row"><span class="label">近 7 天</span><b class="money">¥16.42</b><span class="tokens">9,420 万 tokens</span></div>
+        <div class="row"><span class="label">本月</span><b class="money">¥31.08</b><span class="tokens">1.71 亿 tokens</span></div>
+        <div class="row"><span class="label">全部</span><b class="money">¥57.90</b><span class="tokens">3.02 亿 tokens</span></div>
+      </div>
+      <div class="saved">本地模型已省 <b>¥0.94</b> <em>按 Flash 价</em></div>
+
+      <div class="subhead">API 用量 · 本月</div>
+      <div class="entry"><span class="rank first">1</span><span class="name">deepseek-flash</span><span class="prov">DeepSeek</span><span class="money">¥18.42</span><span class="tok">8,420 万</span></div>
+      <div class="entry"><span class="rank">2</span><span class="name">deepseek-v4-pro</span><span class="prov">DeepSeek</span><span class="money">¥10.86</span><span class="tok">3,120 万</span></div>
+      <div class="entry"><span class="rank">3</span><span class="name">qwen3:8b</span><span class="prov">Ollama</span><span class="money">省 ¥0.94</span><span class="tok">1,160 万</span></div>
+      <div class="more">展开全部 6 个</div>
+
+      <div class="rate-head">缓存命中率 <b>98.2%</b></div>
+      <div class="bar"><i style="width:98.2%"></i></div>
+      <div class="advice">命中率 98.2%：缓存利用良好。继续在同一会话追问，尽量别改动开头的大段上下文。</div>
+      <div class="days">
+        <div class="day"><span>84%</span><i style="height:24px"></i><span>日</span></div>
+        <div class="day"><span>89%</span><i style="height:26px"></i><span>一</span></div>
+        <div class="day"><span>93%</span><i style="height:27px"></i><span>二</span></div>
+        <div class="day"><span>97%</span><i style="height:29px"></i><span>三</span></div>
+        <div class="day"><span>98%</span><i style="height:29px"></i><span>四</span></div>
+        <div class="day"><span>99%</span><i style="height:30px"></i><span>五</span></div>
+        <div class="day today"><span>98%</span><i style="height:30px"></i><span>六</span></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      费用只统计 DeepSeek；Ollama 等本地模型按 DeepSeek 同档价格折算「已省」，仅供参考。<br />
+      <span class="link">数据文件夹</span> · <span class="link">价格来源</span>
+    </div>
+    <div class="support">☕ 请我喝杯咖啡</div>
+  </div>
+</body>
+</html>
