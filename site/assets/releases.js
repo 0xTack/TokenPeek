@@ -1,34 +1,34 @@
 window.DEEPSEEK_RELEASE = {
-  "version": "1.5",
+  "version": "1.6",
   "date": "2026-11-02",
   "versions": {
-    "mac": "1.5",
+    "mac": "1.6",
     "windows": "1.3"
   },
-  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.5/",
+  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.6/",
   "downloads": [
     {
       "id": "mac-arm64",
       "platform": "macOS",
       "name": "Apple Silicon",
       "arch": "arm64",
-      "version": "1.5",
+      "version": "1.6",
       "min": "macOS 14 Sonoma 或更高",
       "recommended": true,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.5-AppleSilicon.dmg",
+          "file": "TokenPeek-1.6-AppleSilicon.dmg",
           "size": "4.2 MB",
-          "sha256": "31c6bb3ea99f9973bdf8550e2a2644fac36e5ec7aac8ae8f22b142e32334b644"
+          "sha256": "dbf3cfd1a7985ed8b5a02b3c9c6cd5f370fdd27f5ada4736bae26159ed9d3ab4"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.5-AppleSilicon.zip",
-          "size": "3.7 MB",
-          "sha256": "ace6401f8c6b3faee49333c7f2081f51c6a123d08df410b0c1d5949c6906db1c"
+          "file": "TokenPeek-1.6-AppleSilicon.zip",
+          "size": "3.8 MB",
+          "sha256": "52d11fe04ee0c5bc6509769bbfba3403e5c07233642c28b0da913833743d8580"
         }
       ]
     },
@@ -37,23 +37,23 @@ window.DEEPSEEK_RELEASE = {
       "platform": "macOS",
       "name": "Intel",
       "arch": "x86_64",
-      "version": "1.5",
+      "version": "1.6",
       "min": "macOS 13 Ventura 或更高",
       "recommended": false,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.5-Intel.dmg",
+          "file": "TokenPeek-1.6-Intel.dmg",
           "size": "4.3 MB",
-          "sha256": "3e4094a77788e961e5368b524f1db117cb6cdb06f60be935f1bdfa66c7bcc9da"
+          "sha256": "9e854599b05e9bea186faf15335a7191af56305b2141e0d30d5af6cbfaf101c7"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.5-Intel.zip",
-          "size": "3.8 MB",
-          "sha256": "0df5ccd841fdc309e04e18282816b415ef4c71e4c4bfd40763cf7378136b45d4"
+          "file": "TokenPeek-1.6-Intel.zip",
+          "size": "3.9 MB",
+          "sha256": "810f3eb1b35fdd52db2e6b5b22ffd287786c30030bd57d0ec29835ab9aa9c050"
         }
       ]
     },
@@ -77,6 +77,18 @@ window.DEEPSEEK_RELEASE = {
     }
   ],
   "history": [
+    {
+      "version": "1.6",
+      "date": "2026-11-02",
+      "notes": [
+        "新增「订阅监控」：任何返回 JSON 的接口都能接入，自动识别字段，显示剩余或已用的百分比",
+        "订阅支持胶囊 / 柱状图两种显示，设置里可切换",
+        "面板里订阅与余额合成一块，只留一个刷新按钮，同时刷新两项",
+        "「充值」不再常驻，鼠标移到余额行才出现",
+        "设置里合并成「订阅与花费」，订阅和手动花费放在一起",
+        "修复显示切换后不生效的问题"
+      ]
+    },
     {
       "version": "1.5",
       "date": "2026-11-02",
