@@ -75,7 +75,7 @@ macOS 菜单栏 Token 用量 / 花费工具。当前版本 **1.5（Build 6，已
 - DeepSeek 模型价格：可直接改 Flash / Pro 的空闲与高峰价；也可粘贴价格页网址自动识别（支持官方 .md / HTML 表格，识别失败仍可手填）
 - 应用图标：复古版画（默认）/ 水彩治愈 / 经典
 - 状态圆环配色：经典（系统绿/橙/红）/ 柔和（默认，方案 A）/ 浅色（方案 B），设置内实时预览三色
-- 启动时检查更新、手动检查更新（GitHub Releases `0xTack/tokenpeek`）
+- 启动时检查更新、手动检查更新（GitHub Releases `0xTack/TokenPeek`）
 - 底部「更新日志」和「反馈」
 - iCloud 备份
 

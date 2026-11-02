@@ -3503,7 +3503,7 @@ struct UpdateCheckError: Error {
 }
 
 enum UpdateChecker {
-    static let repository = "0xTack/tokenpeek"
+    static let repository = "0xTack/TokenPeek"
 
     static var currentVersion: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0"
