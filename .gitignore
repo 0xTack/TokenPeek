@@ -32,3 +32,9 @@ Thumbs.db
 *.log
 .vscode/
 .idea/
+
+# 打赏相关文档：只在本地保留，不进仓库
+docs/打赏功能说明.md
+docs/打赏功能-交接给下一个AI.md
+docs/有你真好-打赏彩蛋.md
+docs/DonationEasterEgg.swift

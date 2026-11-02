@@ -1,4 +1,4 @@
-# DeepSeek 仪表盘（Windows 版）
+# TokenPeek（Windows 版）
 
 macOS 版的 Windows 移植。常驻托盘，显示 DeepSeek 当前是**高峰**还是**空闲**时段，并按官方人民币价格统计本机用量。
 

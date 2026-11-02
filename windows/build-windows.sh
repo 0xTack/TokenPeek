@@ -50,10 +50,10 @@ npx @electron/packager . "${APP_NAME}" \
   --icon=assets/icon.ico \
   --app-version="${VERSION}.0" \
   --build-version="${VERSION}.0" \
-  --app-copyright="DeepSeek 仪表盘" \
-  --win32metadata.CompanyName="DeepSeek 仪表盘" \
+  --app-copyright="TokenPeek" \
+  --win32metadata.CompanyName="TokenPeek" \
   --win32metadata.FileDescription="DeepSeek 时段与用量统计" \
-  --win32metadata.ProductName="DeepSeek 仪表盘" \
+  --win32metadata.ProductName="TokenPeek" \
   --extra-resource=vendor/sqlite3.exe \
   --extra-resource=assets/tray-idle.png \
   --extra-resource=assets/tray-peak.png \

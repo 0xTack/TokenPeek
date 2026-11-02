@@ -3790,7 +3790,7 @@ struct ChangelogView: View {
 
             HStack {
                 Button(L.t("查看历史版本", "Older versions")) {
-                    if let url = URL(string: "https://0xtack.github.io/tokenpeek/#changelog") {
+                    if let url = URL(string: "https://0xtack.github.io/TokenPeek/#changelog") {
                         NSWorkspace.shared.open(url)
                     }
                 }
@@ -6404,7 +6404,7 @@ struct SettingsView: View {
                         .controlSize(.small)
 
                         Button(L.t("反馈", "Feedback")) {
-                            if let url = URL(string: "https://github.com/0xTack/tokenpeek/issues/new") {
+                            if let url = URL(string: "https://github.com/0xTack/TokenPeek/issues/new") {
                                 NSWorkspace.shared.open(url)
                             }
                         }

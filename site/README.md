@@ -1,4 +1,4 @@
-# DeepSeek 仪表盘 · 发布页
+# TokenPeek · 发布页
 
 静态下载页，无后端、无外部依赖。页面数据来自 `assets/releases.js`，安装包放在
 `downloads/`，也可以用 `--base` 指向 GitHub Releases 或对象存储。

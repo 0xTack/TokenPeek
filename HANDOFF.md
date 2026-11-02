@@ -10,7 +10,7 @@ macOS 菜单栏 Token 用量 / 花费工具。当前版本 **1.5（Build 6，已
 
 `main.swift` 现约 8430 行。本轮在已安装的 1.5 上继续改，版本号没动：
 
-- **深色模式补全**：新增 `AppAppearance`（跟随系统 / 浅色 / 深色）；`ThemedRoot` 给所有 SwiftUI 窗口显式注入 `colorScheme`；设置窗口、面板、AI 页、日志页、打赏页都不会再在深色下发白。菜单不再强制跟 App 主题，改为跟随系统。
+- **深色模式补全**：新增 `AppAppearance`（跟随系统 / 浅色 / 深色）；`ThemedRoot` 给所有 SwiftUI 窗口显式注入 `colorScheme`；设置窗口、面板、AI 页、日志页都不会再在深色下发白。菜单不再强制跟 App 主题，改为跟随系统。
 - **右键菜单重写**：从原生 `NSMenu` 换成 `StatusMenuView` + 自定义 `StatusMenuPanel`（`NSPanel`）。背景用 `NSVisualEffectView .menu`，浅色/深色都是系统半透明材质；**定位和系统菜单一致：左边缘比状态栏图标再向左溢出约 12pt，向右展开，右边放不下时整体左移**（实测对齐了 LuLu 原生菜单）；打开/关闭有淡入淡出。**没有 `--menu` 调试参数了**。
 - **设置窗口位置**：先按最终内容尺寸 `setContentSize` 再居中（原来先居中后改尺寸，会右/下偏约 15pt）；在鼠标所在屏幕的 `visibleFrame` 里居中，并限制在可视区域内。
 - **总花费口径**：去掉账号上的「计入总花费」勾选；只要账号已登录（有 Token），它的历史累计花费就一律计入总花费。
@@ -33,7 +33,7 @@ macOS 菜单栏 Token 用量 / 花费工具。当前版本 **1.5（Build 6，已
 - 主程序：`main.swift`（单文件）
 - 已安装：`/Applications/TokenPeek.app`
 - 桌面产物：`~/Desktop/TokenPeek-1.5-AppleSilicon.dmg` / `.zip`、`TokenPeek-1.5-Intel.dmg` / `.zip`
-- GitHub Release：<https://github.com/0xTack/tokenpeek/releases/tag/v1.5>
+- GitHub Release：<https://github.com/0xTack/TokenPeek/releases/tag/v1.5>
 - 旧版 DeepSeek 仪表盘已从 `/Applications` 移除
 
 ## 1.5 已实现
@@ -88,19 +88,6 @@ macOS 菜单栏 Token 用量 / 花费工具。当前版本 **1.5（Build 6，已
 - 备份位置：`~/Library/Mobile Documents/com~apple~CloudDocs/TokenPeek/backups/`
 - 换机没有本机密钥时 Token 不恢复，需要重新登录
 - CLI：`--backup` / `--backup-list` / `--restore-latest`
-
-### 打赏「有你真好」
-- 右键菜单「👏 有你真好」，位于「检查更新」下方，与上方用分隔线隔开
-- 菜单里已删除：价格来源、官方余额、充值
-- 赞赏窗口：随机 10 条吹捧文案；无标题/无手掌图标/无「已打赏」按钮
-- 主入口：紫色「去爱发电支持」按钮，打开 `https://afdian.com/a/tack123`
-- 次入口：微信赞赏码（约 120pt）；运行时按深色内容自动裁正居中，`donation-qr.png` 不存在时自动隐藏，只留爱发电按钮
-- 按钮下方固定一行小字：「自愿赞赏 · 不换取任何功能或服务 · 不支持退款」
-- 打开后 1 秒：播放合成欢呼音效 + 一行玻璃条「天气从未如此明媚」3 秒
-- 打开后 10 秒仍未关闭：换「你这么好看，在犹豫什么」4 秒
-- 每次打开只触发一次；不挡按钮和二维码；关窗取消
-- 可复刻代码：`docs/DonationEasterEgg.swift`（仍是旧版二维码示例，App 现已改为爱发电按钮）
-- 复刻说明：`docs/有你真好-打赏彩蛋.md`
 
 ### 其他
 - 命中率行左侧小号「（预测 ¥x.xx/百万）」，按当前命中率估算输入均价
@@ -172,7 +159,6 @@ SKIP_VERSION_BUMP=1 ./package.sh
 16. **「本月」在月初趋势点很少**：11 月 1 日选「本月」只有今天一个点（会画成居中的小圆点），切「近 7 天 / 全部」才完整
 17. **官方账号区仍只显示数字**：官方接口只有按 Key 的区间汇总，没有逐模型数据；「我的用量」柱状图只对 OpenCode / 自定义 / 本地来源生效
 18. **自定义右键菜单没有原生键盘导航**：⌘, / ⌘Q 走 App 主菜单仍可用
-19. **爱发电主页认证中**：2026-11-02 已提交实名认证，预计 2 个工作日；通过前公开页显示「未认证创作者」，Tack 的名字、简介、头像不会显示
 
 ## 建议下一步
 
@@ -190,7 +176,4 @@ SKIP_VERSION_BUMP=1 ./package.sh
 ## 相关文档
 
 - `docs/自定义来源接入说明.md`
-- `docs/打赏功能说明.md`（打赏页完整参数、文案、时序、移植清单）
-- `docs/DonationEasterEgg.swift`
-- `docs/有你真好-打赏彩蛋.md`
 - `README.md`（部分旧内容仍停留在 1.1，新增内容看本文优先）

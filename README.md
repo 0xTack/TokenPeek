@@ -1,4 +1,4 @@
-# DeepSeek 仪表盘（菜单栏）
+# TokenPeek（菜单栏）
 
 一个小巧的 macOS 菜单栏工具：显示 DeepSeek 当前是**高峰**还是**空闲**时段，并按官方人民币价格计算 token 费用。
 
@@ -96,7 +96,7 @@ curl https://api.deepseek.com/user/balance \
 任何脚本或插件都可以上报一条用量，菜单栏会按 App 排名：
 
 ```bash
-~/Applications/DeepSeek仪表盘.app/Contents/MacOS/DeepSeekCost \
+/Applications/TokenPeek.app/Contents/MacOS/DeepSeekCost \
   --report --app Obsidian --model deepseek-flash \
   --hit 0 --miss 1000 --output 200
 ```
@@ -137,7 +137,7 @@ OpenAI 等其他厂商走「本地来源」：可以配置一条脚本命令，�
 
 详细步骤见 [macOS 打开说明](docs/macOS-打开说明.md)，在线版：
 
-<https://0xtack.github.io/tokenpeek/macos-open.html>
+<https://0xtack.github.io/TokenPeek/macos-open.html>
 
 ## 编译安装
 
@@ -145,7 +145,7 @@ OpenAI 等其他厂商走「本地来源」：可以配置一条脚本命令，�
 ./build.sh
 ```
 
-脚本会编译、签名，安装到 `~/Applications/DeepSeek仪表盘.app` 并启动。
+脚本会编译、签名，安装到 `/Applications/TokenPeek.app` 并启动。
 
 ## 打包发布版
 
@@ -157,8 +157,8 @@ cd windows && ./build-windows.sh   # Windows 11 x64
 
 产物：
 
-- `dist/DeepSeek仪表盘-1.1-AppleSilicon.dmg` / `.zip`
-- `dist/DeepSeek仪表盘-1.1-Intel.dmg` / `.zip`
+- `dist/TokenPeek-1.5-AppleSilicon.dmg` / `.zip`
+- `dist/TokenPeek-1.5-Intel.dmg` / `.zip`
 - `windows/dist/DeepSeekDashboard-1.3-Windows-x64.zip`
 
 macOS 两个版本也会自动复制到桌面。
@@ -166,8 +166,8 @@ macOS 两个版本也会自动复制到桌面。
 ## 卸载
 
 ```bash
-pkill -f "DeepSeek仪表盘.app/Contents/MacOS/DeepSeekCost"
-rm -rf ~/Applications/DeepSeek仪表盘.app
+pkill -f "TokenPeek.app/Contents/MacOS/DeepSeekCost"
+rm -rf /Applications/TokenPeek.app
 rm -f ~/Library/LaunchAgents/local.deepseekcost.plist
 ```
 
@@ -196,10 +196,6 @@ python3 -m http.server 8080
 
 发布流程、部署方式和参数说明见 [site/README.md](site/README.md)。
 
-## 支持作者
-
-如果这个工具帮到了你，可以在面板最下方点「请我喝杯咖啡」，微信扫码即可。
-
 ## 菜单栏里找不到图标？
 
 如果用了 Hidden Bar 之类的收纳工具，新图标可能被自动收进折叠区：
@@ -210,23 +206,12 @@ python3 -m http.server 8080
 ## 自检
 
 ```bash
-"$HOME/Applications/DeepSeek仪表盘.app/Contents/MacOS/DeepSeekCost" --self-test
-"$HOME/Applications/DeepSeek仪表盘.app/Contents/MacOS/DeepSeekCost" --check
-"$HOME/Applications/DeepSeek仪表盘.app/Contents/MacOS/DeepSeekCost" --usage
+"/Applications/TokenPeek.app/Contents/MacOS/DeepSeekCost" --self-test
+"/Applications/TokenPeek.app/Contents/MacOS/DeepSeekCost" --check
+"/Applications/TokenPeek.app/Contents/MacOS/DeepSeekCost" --usage
 ```
 
 ## 开源协议
 
 本项目使用 [MIT License](LICENSE)。
 
-## 打赏入口
-
-macOS 赞赏窗口有两个入口：
-
-- 主入口：紫色「去爱发电支持」按钮，打开 `https://afdian.com/a/tack123`
-- 次入口：微信赞赏码（约 140pt），掏出手机直接扫
-
-`donation-qr.png` 默认不提交到仓库，本机打包时注入：
-
-- macOS：`build.sh` / `package.sh` / `package-intel13.sh` 会复制到 App 的 Resources；没有文件时自动隐藏二维码，只显示爱发电按钮
-- Windows：`windows/build-windows.sh` 会复制到 `windows/assets/`

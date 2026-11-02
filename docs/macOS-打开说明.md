@@ -1,6 +1,6 @@
 # macOS 打开说明
 
-DeepSeek 仪表盘的 macOS 安装包使用 **ad-hoc 签名**，没有 Apple Developer ID，也没有做公证。因此第一次打开时，macOS 的 Gatekeeper 可能会拦截。
+TokenPeek 的 macOS 安装包使用 **ad-hoc 签名**，没有 Apple Developer ID，也没有做公证。因此第一次打开时，macOS 的 Gatekeeper 可能会拦截。
 
 **这不是病毒，也不会把任何数据上传。** 代码是 MIT 开源的，可以自行审查或编译。
 
@@ -14,7 +14,7 @@ DeepSeek 仪表盘的 macOS 安装包使用 **ad-hoc 签名**，没有 Apple Dev
 
 ### 方式 A：右键打开
 
-1. 在「应用程序」里找到 **DeepSeek 仪表盘**
+1. 在「应用程序」里找到 **TokenPeek**
 2. **右键**（或按住 Control 点按）→ 选择「打开」
 3. 在弹窗里再点「打开」
 
@@ -22,15 +22,15 @@ DeepSeek 仪表盘的 macOS 安装包使用 **ad-hoc 签名**，没有 Apple Dev
 
 1. 先双击一次 App，让系统弹出拦截提示
 2. 打开 **系统设置 → 隐私与安全性**
-3. 在页面下方找到「已阻止使用 DeepSeek 仪表盘」
+3. 在页面下方找到「已阻止使用 TokenPeek」
 4. 点 **仍要打开**
 5. 输入开机密码或 Touch ID
 
 ### 方式 C：终端移除隔离标记
 
 ```bash
-xattr -dr com.apple.quarantine "/Applications/DeepSeek仪表盘.app"
-open "/Applications/DeepSeek仪表盘.app"
+xattr -dr com.apple.quarantine "/Applications/TokenPeek.app"
+open "/Applications/TokenPeek.app"
 ```
 
 ---
@@ -44,8 +44,8 @@ open "/Applications/DeepSeek仪表盘.app"
 3. 打开「终端」，执行：
 
 ```bash
-xattr -cr "/Applications/DeepSeek仪表盘.app"
-open "/Applications/DeepSeek仪表盘.app"
+xattr -cr "/Applications/TokenPeek.app"
+open "/Applications/TokenPeek.app"
 ```
 
 4. 如果仍然提示，再按「情况 1」的方式右键 → 打开
@@ -66,7 +66,7 @@ open "/Applications/DeepSeek仪表盘.app"
 如果担心下载不完整，可以校验 SHA-256：
 
 ```bash
-shasum -a 256 ~/Downloads/DeepSeek仪表盘-1.1-AppleSilicon.dmg
+shasum -a 256 ~/Downloads/TokenPeek-1.5-AppleSilicon.dmg
 ```
 
 把输出与发布页或 Release 页面里的校验值对比。一致就说明文件完整。
@@ -85,8 +85,8 @@ shasum -a 256 ~/Downloads/DeepSeek仪表盘-1.1-AppleSilicon.dmg
 ## 卸载
 
 ```bash
-pkill -f "DeepSeek仪表盘.app/Contents/MacOS/DeepSeekCost"
-rm -rf "/Applications/DeepSeek仪表盘.app"
+pkill -f "TokenPeek.app/Contents/MacOS/DeepSeekCost"
+rm -rf "/Applications/TokenPeek.app"
 ```
 
 可选删除本机数据：
@@ -102,4 +102,4 @@ rm -rf "$HOME/Library/Application Support/DeepSeekCost"
 - macOS 版本
 - 芯片类型（Apple Silicon / Intel）
 - 完整报错截图
-- `xattr -l "/Applications/DeepSeek仪表盘.app"` 的输出
+- `xattr -l "/Applications/TokenPeek.app"` 的输出
