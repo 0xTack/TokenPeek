@@ -184,3 +184,39 @@
 @media (max-width: 900px) {
   .works-grid { grid-template-columns: 1fr !important; }
 }
+
+/* 适配范围 */
+.compat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.compat-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(142, 224, 176, 0.12);
+  border: 1px solid rgba(142, 224, 176, 0.28);
+  color: #9fe6bd;
+}
+
+.compat-pill:nth-child(2) {
+  background: rgba(185, 167, 255, 0.12);
+  border-color: rgba(185, 167, 255, 0.28);
+  color: #c9bcff;
+}
+
+.compat-pill:nth-child(3) {
+  background: rgba(255, 212, 121, 0.12);
+  border-color: rgba(255, 212, 121, 0.28);
+  color: #ffd479;
+}
+
+.compat-pill:nth-child(4) {
+  background: rgba(255, 157, 144, 0.12);
+  border-color: rgba(255, 157, 144, 0.28);
+  color: #ff9d90;
+}
