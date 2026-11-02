@@ -1,34 +1,34 @@
 window.DEEPSEEK_RELEASE = {
-  "version": "1.3",
-  "date": "2026-10-31",
+  "version": "1.5",
+  "date": "2026-11-02",
   "versions": {
-    "mac": "1.1",
+    "mac": "1.5",
     "windows": "1.3"
   },
-  "base": "https://github.com/xiaoan223/deepseek-dashboard/releases/download/v1.3/",
+  "base": "https://github.com/xiaoan223/deepseek-dashboard/releases/download/v1.5/",
   "downloads": [
     {
       "id": "mac-arm64",
       "platform": "macOS",
       "name": "Apple Silicon",
       "arch": "arm64",
-      "version": "1.1",
+      "version": "1.5",
       "min": "macOS 14 Sonoma 或更高",
       "recommended": true,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "DeepSeek-Dashboard-1.1-AppleSilicon.dmg",
-          "size": "1.3 MB",
-          "sha256": "06c61186a27e988a778390a0b2fef452d2e76d268e94c4689a0b20908b2dfe34"
+          "file": "TokenPeek-1.5-AppleSilicon.dmg",
+          "size": "4.2 MB",
+          "sha256": "31c6bb3ea99f9973bdf8550e2a2644fac36e5ec7aac8ae8f22b142e32334b644"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "DeepSeek-Dashboard-1.1-AppleSilicon.zip",
-          "size": "1008 KB",
-          "sha256": "26466f09f1d318dbc129a8a63e50b6ac3e9f52cb8692f91fb4a4a2bc3c0f9cf0"
+          "file": "TokenPeek-1.5-AppleSilicon.zip",
+          "size": "3.7 MB",
+          "sha256": "ace6401f8c6b3faee49333c7f2081f51c6a123d08df410b0c1d5949c6906db1c"
         }
       ]
     },
@@ -37,23 +37,23 @@ window.DEEPSEEK_RELEASE = {
       "platform": "macOS",
       "name": "Intel",
       "arch": "x86_64",
-      "version": "1.1",
+      "version": "1.5",
       "min": "macOS 13 Ventura 或更高",
       "recommended": false,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "DeepSeek-Dashboard-1.1-Intel.dmg",
-          "size": "1.4 MB",
-          "sha256": "4b6728d5c619f0edc5a388092e32229710291fb6919cc491d3358da3bc7376b5"
+          "file": "TokenPeek-1.5-Intel.dmg",
+          "size": "4.3 MB",
+          "sha256": "3e4094a77788e961e5368b524f1db117cb6cdb06f60be935f1bdfa66c7bcc9da"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "DeepSeek-Dashboard-1.1-Intel.zip",
-          "size": "1.0 MB",
-          "sha256": "103a153877057d45f1ebadae44afefa7b817c779ccd2e96c4a68b8eb9ab2d702"
+          "file": "TokenPeek-1.5-Intel.zip",
+          "size": "3.8 MB",
+          "sha256": "0df5ccd841fdc309e04e18282816b415ef4c71e4c4bfd40763cf7378136b45d4"
         }
       ]
     },
@@ -77,6 +77,18 @@ window.DEEPSEEK_RELEASE = {
     }
   ],
   "history": [
+    {
+      "version": "1.5",
+      "date": "2026-11-02",
+      "notes": [
+        "全新液态玻璃面板",
+        "状态圆环配色",
+        "多账号总花费",
+        "趋势图简化",
+        "价格识别与 iCloud 备份",
+        "爱发电 + 微信双入口"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2026-10-31",
