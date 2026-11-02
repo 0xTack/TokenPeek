@@ -158,3 +158,29 @@
   .sticker { display: none; }
   .squiggle { width: 150px; }
 }
+
+/* 作品页：单列首屏 + 两列项目卡 */
+.hero-single { grid-template-columns: minmax(0, 760px) !important; }
+
+.works-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+.work-icon {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.work-alt {
+  margin-left: 0.25em;
+  font-size: 0.62em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--faint);
+}
+
+@media (max-width: 900px) {
+  .works-grid { grid-template-columns: 1fr !important; }
+}
