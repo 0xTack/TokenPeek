@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>macOS 打开说明 · DeepSeek 仪表盘</title>
-  <meta name="description" content="DeepSeek 仪表盘 macOS 版打不开、提示无法验证开发者或已损坏时的处理方法。先不要移到废纸篓。" />
+  <title>macOS 打开说明 · TokenPeek</title>
+  <meta name="description" content="TokenPeek macOS 版打不开、提示无法验证开发者或已损坏时的处理方法。先不要移到废纸篓。" />
   <meta name="theme-color" content="#0b0f14" />
-  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <link rel="icon" type="image/png" href="assets/icon-tokenpeek.png" />
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
@@ -14,9 +14,9 @@
 
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html" aria-label="返回 DeepSeek 仪表盘首页">
-        <img src="assets/icon.png" alt="" width="28" height="28" />
-        <span>DeepSeek 仪表盘</span>
+      <a class="brand" href="index.html" aria-label="返回 TokenPeek 首页">
+        <img src="assets/icon-tokenpeek.png" alt="" width="28" height="28" />
+        <span>TokenPeek</span>
       </a>
       <nav class="nav-links" aria-label="页面导航">
         <a href="index.html#highlights">卖点</a>
@@ -40,7 +40,7 @@
         <span class="eyebrow">macOS</span>
         <h1>打不开？先别移到废纸篓</h1>
         <p class="doc-lead">
-          DeepSeek 仪表盘的 macOS 版使用 ad-hoc 签名，没有 Apple Developer ID，也没有做公证。
+          TokenPeek 的 macOS 版使用 ad-hoc 签名，没有 Apple Developer ID，也没有做公证。
           macOS 的 Gatekeeper 可能会拦截第一次打开。这不是病毒，也不会上传任何数据；代码是 MIT 开源的。
         </p>
 
@@ -53,7 +53,7 @@
 
         <h3>方式 A：右键打开</h3>
         <ol>
-          <li>在「应用程序」里找到 <strong>DeepSeek 仪表盘</strong></li>
+          <li>在「应用程序」里找到 <strong>TokenPeek</strong></li>
           <li><strong>右键</strong>（或按住 Control 点按）→ 选择「打开」</li>
           <li>在弹窗里再点一次「打开」</li>
         </ol>
@@ -62,13 +62,13 @@
         <ol>
           <li>先双击一次 App，让系统弹出拦截提示</li>
           <li>打开 <strong>系统设置 → 隐私与安全性</strong></li>
-          <li>在页面下方找到「已阻止使用 DeepSeek 仪表盘」</li>
+          <li>在页面下方找到「已阻止使用 TokenPeek」</li>
           <li>点 <strong>仍要打开</strong>，输入开机密码或 Touch ID</li>
         </ol>
 
         <h3>方式 C：终端移除隔离标记</h3>
-        <pre><code>xattr -dr com.apple.quarantine "/Applications/DeepSeek仪表盘.app"
-open "/Applications/DeepSeek仪表盘.app"</code></pre>
+        <pre><code>xattr -dr com.apple.quarantine "/Applications/TokenPeek.app"
+open "/Applications/TokenPeek.app"</code></pre>
 
         <h2>情况 2：提示「已损坏，应移到废纸篓」</h2>
         <p>这是下载隔离标记导致的常见提示，不代表文件真的损坏。</p>
@@ -76,8 +76,8 @@ open "/Applications/DeepSeek仪表盘.app"</code></pre>
           <li><strong>不要点「移到废纸篓」</strong></li>
           <li>如果已经移进废纸篓，把它从废纸篓拖回「应用程序」</li>
           <li>打开「终端」，执行：
-            <pre><code>xattr -cr "/Applications/DeepSeek仪表盘.app"
-open "/Applications/DeepSeek仪表盘.app"</code></pre>
+            <pre><code>xattr -cr "/Applications/TokenPeek.app"
+open "/Applications/TokenPeek.app"</code></pre>
           </li>
           <li>如果仍然提示，再按「情况 1」的方式右键 → 打开</li>
         </ol>
@@ -92,7 +92,7 @@ open "/Applications/DeepSeek仪表盘.app"</code></pre>
 
         <h2>校验安装包</h2>
         <p>如果担心下载不完整，可以校验 SHA-256：</p>
-        <pre><code>shasum -a 256 ~/Downloads/DeepSeek仪表盘-1.1-AppleSilicon.dmg</code></pre>
+        <pre><code>shasum -a 256 ~/Downloads/TokenPeek-1.5-AppleSilicon.dmg</code></pre>
         <p>把输出与下载页或 GitHub Release 里的校验值对比，一致就说明文件完整。</p>
 
         <h2>为什么不做签名和公证</h2>
@@ -104,8 +104,8 @@ open "/Applications/DeepSeek仪表盘.app"</code></pre>
         </ul>
 
         <h2>卸载</h2>
-        <pre><code>pkill -f "DeepSeek仪表盘.app/Contents/MacOS/DeepSeekCost"
-rm -rf "/Applications/DeepSeek仪表盘.app"</code></pre>
+        <pre><code>pkill -f "TokenPeek.app/Contents/MacOS/DeepSeekCost"
+rm -rf "/Applications/TokenPeek.app"</code></pre>
         <p>可选删除本机数据：</p>
         <pre><code>rm -rf "$HOME/Library/Application Support/DeepSeekCost"</code></pre>
 
@@ -120,8 +120,8 @@ rm -rf "/Applications/DeepSeek仪表盘.app"</code></pre>
   <footer class="footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <img src="assets/icon.png" alt="" width="22" height="22" />
-        <span>DeepSeek 仪表盘</span>
+        <img src="assets/icon-tokenpeek.png" alt="" width="22" height="22" />
+        <span>TokenPeek</span>
       </div>
       <div class="footer-links">
         <a href="index.html">首页</a>
