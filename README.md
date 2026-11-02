@@ -123,13 +123,21 @@ curl https://api.deepseek.com/user/balance \
 
 然后在「我的用量」里选「自定义 App」，就能看到总计、App 用量 Top 3、缓存命中率和每日趋势。
 
+### 更多厂商 / 本地来源
+
+OpenAI 等其他厂商走「本地来源」：可以配置一条脚本命令，也可以直接放一个 `.jsonl` 到 `~/Library/Application Support/DeepSeekCost/sources/`，App 会自动发现。
+
+完整字段说明、DeepSeek 官方接口、OpenAI Admin API 示例、以及给 AI 的自定义接入提示词见：
+
+[自定义来源接入说明](docs/自定义来源接入说明.md)
+
 ## macOS 打不开？
 
 如果提示「无法验证开发者」或「已损坏，应移到废纸篓」，**先不要删除 App**。
 
 详细步骤见 [macOS 打开说明](docs/macOS-打开说明.md)，在线版：
 
-<https://xiaoan223.github.io/deepseek-dashboard/macos-open.html>
+<https://0xtack.github.io/tokenpeek/macos-open.html>
 
 ## 编译安装
 
@@ -211,12 +219,14 @@ python3 -m http.server 8080
 
 本项目使用 [MIT License](LICENSE)。
 
-## 赞赏码不进入仓库
+## 打赏入口
 
-`donation-qr.png` 是作者本人的微信赞赏码，默认不提交到仓库，只在本机打包时注入：
+macOS 赞赏窗口有两个入口：
 
-- macOS：放在项目根目录，`build.sh` / `package.sh` / `package-intel13.sh` 会自动复制到 App 的 Resources
-- Windows：`windows/build-windows.sh` 会把根目录的 `donation-qr.png` 复制到 `windows/assets/` 再打包
-- 没有这个文件时，两个平台都会自动隐藏「请我喝杯咖啡」入口，源码构建不受影响
+- 主入口：紫色「去爱发电支持」按钮，打开 `https://afdian.com/a/tack123`
+- 次入口：微信赞赏码（约 140pt），掏出手机直接扫
 
-官方发布的安装包包含赞赏码；你也可以换成自己的，或者直接不放。
+`donation-qr.png` 默认不提交到仓库，本机打包时注入：
+
+- macOS：`build.sh` / `package.sh` / `package-intel13.sh` 会复制到 App 的 Resources；没有文件时自动隐藏二维码，只显示爱发电按钮
+- Windows：`windows/build-windows.sh` 会复制到 `windows/assets/`

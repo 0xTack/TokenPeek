@@ -56,7 +56,7 @@ function startCollector({ onRecord, preferredPort = DEFAULT_PORT } = {}) {
         return;
       }
       if (req.method === 'GET' && url.pathname === '/health') {
-        send(res, 200, { ok: true, service: 'deepseek-dashboard', port });
+        send(res, 200, { ok: true, service: 'tokenpeek', port });
         return;
       }
       if (req.method === 'POST' && url.pathname === '/usage') {
