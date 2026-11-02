@@ -278,10 +278,11 @@ enum BackupManager {
         "appLanguage", "currencyMode", "usdRate", "panelOpacity", "appIcon",
         "appAppearance",
         "showHeaderSection", "showPriceSection", "showUsageSection",
-        "showBalanceSection", "showFooterSection", "tier",
+        "showBalanceSection", "showFooterSection", "showSubscriptions", "tier",
         "selectedSource", "selectedOfficialAccountID", "autoCheckUpdates",
         "autoICloudBackup", "showDockIcon",
         "priceSourceURL", "usageDisplayMode", "statusRingStyle",
+        "subscriptionStyle", "subscriptionMode",
     ]
 
     static func listBackups() -> [BackupInfo] {
@@ -1649,8 +1650,8 @@ enum UsageDisplayMode: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .numbers: return L.t("数字", "Numbers")
-        case .bars: return L.t("柱状图", "Bars")
+        case .numbers: return L.t("逐行数字", "Rows")
+        case .bars: return L.t("并排柱状图", "Bars")
         }
     }
 }
@@ -3733,32 +3734,18 @@ struct ChangelogView: View {
     }
 
     private let notes: [(zh: String, en: String)] = [
-        ("DeepSeek 多账号：每个账号独立 Token、用量、余额和总花费；已登录账号的花费都计入总花费",
-         "Multiple DeepSeek accounts with separate tokens, usage, balance and total spend"),
-        ("本地来源：自动发现 sources/*.jsonl，也可以配置命令在刷新时生成数据",
-         "Local sources: auto-discovers sources/*.jsonl, or runs a command on refresh"),
-        ("手动花费：一次性或每月订阅，订阅按开始月份累计，进入总花费",
-         "Manual costs: one-time or monthly subscriptions, included in total spend"),
-        ("总花费：统计区间下拉的最后一行，点开是环形图",
-         "Total spent: the last row of the period menu opens a donut chart"),
-        ("设置：5 个模块开关、不透明度、中英文、货币与汇率、应用图标",
-         "Settings: five section toggles, opacity, language, currency, app icon"),
-        ("iCloud 备份：账号 Token 加密保存，支持每天自动备份和命令行恢复",
-         "iCloud backup with encrypted account tokens, daily auto backup and CLI restore"),
-        ("新增深色模式，可跟随系统、浅色或深色",
-         "Dark mode with System, Light and Dark options"),
-        ("状态圆环新增配色选择：经典 / 柔和 / 浅色，设置内可预览",
-         "New status ring palettes: Classic, Soft and Light, with a preview in Settings"),
-        ("赞赏页改为爱发电按钮 + 微信扫码双入口",
-         "Tip page now offers an Afdian button and a WeChat QR code"),
-        ("账号可以重命名；新账号使用独立登录会话，不会再复用已登录的账号",
-         "Accounts can be renamed; new accounts use a fresh login session"),
-        ("设置里可以直接修改 DeepSeek 模型价格，价格来源保留为快捷入口",
-         "Edit DeepSeek model prices in Settings; the price source stays as a shortcut"),
-        ("「让 AI 帮我接入新来源」改为步骤页，提示词可以复制到任意 AI",
-         "The AI source helper is now a step page; copy the prompt to any AI"),
-        ("设置底部新增更新日志和反馈",
-         "Changelog and feedback at the bottom of Settings"),
+        ("新增「订阅监控」：任何返回 JSON 的接口都能接入，自动识别字段，显示剩余或已用的百分比",
+         "New plan monitoring: plug in any JSON endpoint, detect fields automatically, and show remaining or used percent"),
+        ("订阅支持胶囊 / 柱状图两种显示，设置里可切换",
+         "Plans can be shown as capsules or bars; switch in Settings"),
+        ("面板里订阅与余额合成一块，只留一个刷新按钮，同时刷新两项",
+         "Plans and balance share one block with a single refresh button for both"),
+        ("「充值」不再常驻，鼠标移到余额行才出现",
+         "The top-up button appears only when hovering over the balance row"),
+        ("设置里合并成「订阅与花费」，订阅和手动花费放在一起",
+         "Settings now groups plans and manual costs under one section"),
+        ("修复显示切换后不生效的问题",
+         "Fixed display switches not taking effect"),
     ]
 
     var body: some View {
@@ -4240,6 +4227,516 @@ struct UsageTrendChart: View {
     }
 }
 
+// MARK: - 通用订阅监控
+
+/// 订阅里的一个额度指标，例如 5 小时 / 本周 / 本月。
+struct SubscriptionMetric: Codable, Identifiable, Equatable {
+    enum Kind: String, Codable, CaseIterable, Identifiable {
+        /// 接口给的是「已用百分比」
+        case usedPercent
+        /// 接口给的是「剩余百分比」
+        case remainingPercent
+        /// 接口分别给「剩余量」和「总量」
+        case ratio
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .usedPercent: return L.t("已用 %", "Used %")
+            case .remainingPercent: return L.t("剩余 %", "Left %")
+            case .ratio: return L.t("剩余 / 总量", "Left / total")
+            }
+        }
+    }
+
+    var id = UUID()
+    var label = ""
+    var kind: Kind = .usedPercent
+    /// 百分比路径，或 ratio 模式下的「剩余量」路径
+    var path = ""
+    /// ratio 模式下的「总量」路径
+    var totalPath = ""
+    /// 重置时间路径，可选
+    var resetPath = ""
+
+    var isReady: Bool {
+        guard !path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+        if kind == .ratio {
+            return !totalPath.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }
+        return true
+    }
+
+    func evaluate(root: Any) -> SubscriptionMetricValue {
+        let used: Double?
+        let remaining: Double?
+        let total: Double?
+
+        switch kind {
+        case .usedPercent:
+            used = JSONPathLookup.number(path, in: root)
+            remaining = nil
+            total = nil
+        case .remainingPercent:
+            let left = JSONPathLookup.number(path, in: root)
+            used = left.map { 100 - $0 }
+            remaining = nil
+            total = nil
+        case .ratio:
+            let left = JSONPathLookup.number(path, in: root)
+            let all = JSONPathLookup.number(totalPath, in: root)
+            remaining = left
+            total = all
+            if let left, let all, all > 0 {
+                used = (1 - left / all) * 100
+            } else {
+                used = nil
+            }
+        }
+
+        let reset = JSONPathLookup.string(resetPath, in: root).flatMap { ISODateText.parse($0) }
+        return SubscriptionMetricValue(
+            id: id,
+            label: label.isEmpty ? "—" : label,
+            usedPercent: used,
+            remaining: remaining,
+            total: total,
+            reset: reset
+        )
+    }
+}
+
+enum SubscriptionAuth: String, Codable, CaseIterable, Identifiable {
+    case none
+    case bearer
+    case header
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .none: return L.t("不需要", "None")
+        case .bearer: return "Bearer"
+        case .header: return L.t("自定义 Header", "Custom header")
+        }
+    }
+}
+
+struct SubscriptionSource: Codable, Identifiable, Equatable {
+    var id = UUID()
+    var name = ""
+    var url = ""
+    var auth: SubscriptionAuth = .bearer
+    var token = ""
+    var headerName = "X-API-Key"
+    var metrics: [SubscriptionMetric] = []
+    var enabled = true
+
+    var isReady: Bool {
+        guard enabled,
+              let url = URL(string: url),
+              let scheme = url.scheme?.lowercased(),
+              scheme == "https" || scheme == "http" else { return false }
+        return metrics.contains { $0.isReady }
+    }
+}
+
+struct SubscriptionMetricValue: Identifiable, Equatable {
+    let id: UUID
+    let label: String
+    let usedPercent: Double?
+    let remaining: Double?
+    let total: Double?
+    let reset: Date?
+
+    var remainingPercent: Double? {
+        if let remaining, let total, total > 0 {
+            return max(0, min(100, remaining / total * 100))
+        }
+        if let usedPercent {
+            return max(0, min(100, 100 - usedPercent))
+        }
+        return nil
+    }
+
+    var used: Double? {
+        if let usedPercent { return max(0, min(100, usedPercent)) }
+        if let remainingPercent { return 100 - remainingPercent }
+        return nil
+    }
+}
+
+struct SubscriptionResult {
+    let values: [SubscriptionMetricValue]
+    let error: String?
+    let fetchedAt: Date
+}
+
+enum ISODateText {
+    private static let fractional: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+
+    private static let plain: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
+
+    static func parse(_ text: String) -> Date? {
+        fractional.date(from: text) ?? plain.date(from: text)
+    }
+}
+
+enum JSONPathLookup {
+    static func raw(_ path: String, in root: Any) -> Any? {
+        let trimmed = path.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        var current: Any = root
+        for part in trimmed.split(separator: ".") {
+            let key = String(part)
+            if let dict = current as? [String: Any], let next = dict[key] {
+                current = next
+            } else if let array = current as? [Any], let index = Int(key), array.indices.contains(index) {
+                current = array[index]
+            } else {
+                return nil
+            }
+        }
+        return current
+    }
+
+    static func number(_ path: String, in root: Any) -> Double? {
+        guard let value = raw(path, in: root) else { return nil }
+        if let number = value as? Double { return number }
+        if let number = value as? Int { return Double(number) }
+        if let number = value as? NSNumber { return number.doubleValue }
+        if let text = value as? String { return Double(text) }
+        return nil
+    }
+
+    static func string(_ path: String, in root: Any) -> String? {
+        guard let value = raw(path, in: root) else { return nil }
+        if let text = value as? String { return text }
+        return nil
+    }
+}
+
+enum AppUserAgent {
+    static var value: String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+        return "TokenPeek/\(version) (macOS)"
+    }
+}
+
+enum SubscriptionLoader {
+    static func fetch(_ source: SubscriptionSource, completion: @escaping (SubscriptionResult) -> Void) {
+        guard let url = URL(string: source.url),
+              let scheme = url.scheme?.lowercased(),
+              scheme == "https" || scheme == "http" else {
+            completion(SubscriptionResult(
+                values: [],
+                error: L.t("地址无效", "Invalid URL"),
+                fetchedAt: Date()
+            ))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.timeoutInterval = 15
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(AppUserAgent.value, forHTTPHeaderField: "User-Agent")
+
+        switch source.auth {
+        case .bearer:
+            if !source.token.isEmpty {
+                request.setValue("Bearer \(source.token)", forHTTPHeaderField: "Authorization")
+            }
+        case .header:
+            if !source.headerName.isEmpty {
+                request.setValue(source.token, forHTTPHeaderField: source.headerName)
+            }
+        case .none:
+            break
+        }
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error {
+                completion(SubscriptionResult(
+                    values: [],
+                    error: error.localizedDescription,
+                    fetchedAt: Date()
+                ))
+                return
+            }
+            guard let http = response as? HTTPURLResponse else {
+                completion(SubscriptionResult(
+                    values: [],
+                    error: L.t("没有响应", "No response"),
+                    fetchedAt: Date()
+                ))
+                return
+            }
+            guard http.statusCode == 200 else {
+                completion(SubscriptionResult(
+                    values: [],
+                    error: L.t("接口返回 \(http.statusCode)", "HTTP \(http.statusCode)"),
+                    fetchedAt: Date()
+                ))
+                return
+            }
+            guard let data, let root = try? JSONSerialization.jsonObject(with: data) else {
+                completion(SubscriptionResult(
+                    values: [],
+                    error: L.t("返回内容不是 JSON", "Response is not JSON"),
+                    fetchedAt: Date()
+                ))
+                return
+            }
+
+            let values = source.metrics.filter { $0.isReady }.map { $0.evaluate(root: root) }
+            completion(SubscriptionResult(
+                values: values,
+                error: values.isEmpty ? L.t("没有可用的指标", "No usable metrics") : nil,
+                fetchedAt: Date()
+            ))
+        }.resume()
+    }
+}
+
+final class SubscriptionStore: ObservableObject {
+    static let shared = SubscriptionStore()
+
+    @Published var sources: [SubscriptionSource] = [] {
+        didSet { save() }
+    }
+    @Published private(set) var results: [UUID: SubscriptionResult] = [:]
+
+    private var lastFetch: [UUID: Date] = [:]
+    private let minimumInterval: TimeInterval = 60
+
+    static var fileURL: URL {
+        FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support/DeepSeekCost/subscriptions.json")
+    }
+
+    init() {
+        reload()
+    }
+
+    var activeSources: [SubscriptionSource] {
+        sources.filter { $0.isReady }
+    }
+
+    func reload() {
+        guard let data = try? Data(contentsOf: Self.fileURL),
+              let decoded = try? JSONDecoder().decode([SubscriptionSource].self, from: data) else {
+            return
+        }
+        sources = decoded
+    }
+
+    private func save() {
+        guard let data = try? JSONEncoder().encode(sources) else { return }
+        try? FileManager.default.createDirectory(
+            at: Self.fileURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try? data.write(to: Self.fileURL, options: .atomic)
+    }
+
+    func add(_ source: SubscriptionSource) {
+        sources.append(source)
+        refresh(sourceID: source.id, force: true)
+    }
+
+    func remove(_ id: UUID) {
+        sources.removeAll { $0.id == id }
+        results[id] = nil
+        lastFetch[id] = nil
+    }
+
+    func refresh(force: Bool = false) {
+        for source in activeSources {
+            refresh(sourceID: source.id, force: force)
+        }
+    }
+
+    func refresh(sourceID: UUID, force: Bool) {
+        guard let source = sources.first(where: { $0.id == sourceID }), source.isReady else { return }
+        if !force, let last = lastFetch[sourceID], Date().timeIntervalSince(last) < minimumInterval {
+            return
+        }
+        lastFetch[sourceID] = Date()
+        SubscriptionLoader.fetch(source) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.results[sourceID] = result
+            }
+        }
+    }
+}
+
+enum SubscriptionPreset {
+    static func opencodeGo() -> SubscriptionSource {
+        SubscriptionSource(
+            name: "OpenCode Go",
+            url: "https://opencode.ai/zen/go/v1/usage",
+            auth: .bearer,
+            token: localOpenCodeKey() ?? "",
+            metrics: [
+                SubscriptionMetric(
+                    label: "5h",
+                    kind: .usedPercent,
+                    path: "usage.rolling.percent",
+                    resetPath: "usage.rolling.resetsAt"
+                ),
+                SubscriptionMetric(
+                    label: L.t("周", "Wk"),
+                    kind: .usedPercent,
+                    path: "usage.weekly.percent",
+                    resetPath: "usage.weekly.resetsAt"
+                ),
+                SubscriptionMetric(
+                    label: L.t("月", "Mo"),
+                    kind: .usedPercent,
+                    path: "usage.monthly.percent",
+                    resetPath: "usage.monthly.resetsAt"
+                ),
+            ]
+        )
+    }
+
+    static func localOpenCodeKey() -> String? {
+        let candidates = [
+            FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".local/share/opencode/auth.json"),
+            FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".config/opencode/auth.json"),
+        ]
+        for url in candidates {
+            guard let data = try? Data(contentsOf: url),
+                  let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let entry = root["opencode"] as? [String: Any],
+                  let key = entry["key"] as? String else { continue }
+            let trimmed = key.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty { return trimmed }
+        }
+        return nil
+    }
+}
+
+/// 请求一次接口，把里面的数字字段摊平成「路径 → 数值」，让用户直接选。
+enum SubscriptionProbe {
+    static func fetch(_ source: SubscriptionSource, completion: @escaping ([(String, Double)], String?) -> Void) {
+        guard let url = URL(string: source.url),
+              let scheme = url.scheme?.lowercased(),
+              scheme == "https" || scheme == "http" else {
+            completion([], L.t("地址无效", "Invalid URL"))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 15
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(AppUserAgent.value, forHTTPHeaderField: "User-Agent")
+        switch source.auth {
+        case .bearer:
+            if !source.token.isEmpty { request.setValue("Bearer \(source.token)", forHTTPHeaderField: "Authorization") }
+        case .header:
+            if !source.headerName.isEmpty { request.setValue(source.token, forHTTPHeaderField: source.headerName) }
+        case .none:
+            break
+        }
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error {
+                completion([], error.localizedDescription)
+                return
+            }
+            guard let data, let root = try? JSONSerialization.jsonObject(with: data) else {
+                completion([], L.t("返回内容不是 JSON", "Response is not JSON"))
+                return
+            }
+            var found: [(String, Double)] = []
+            flatten(root, prefix: "", depth: 0, into: &found)
+            completion(found.sorted { $0.0 < $1.0 }, nil)
+        }.resume()
+    }
+
+    private static func flatten(_ node: Any, prefix: String, depth: Int, into out: inout [(String, Double)]) {
+        guard depth < 5, out.count < 60 else { return }
+        if let dict = node as? [String: Any] {
+            for (key, value) in dict.sorted(by: { $0.key < $1.key }) {
+                flatten(value, prefix: prefix.isEmpty ? key : "\(prefix).\(key)", depth: depth + 1, into: &out)
+            }
+        } else if let array = node as? [Any] {
+            for (index, value) in array.enumerated().prefix(5) {
+                flatten(value, prefix: "\(prefix).\(index)", depth: depth + 1, into: &out)
+            }
+        } else if let number = node as? NSNumber {
+            out.append((prefix, number.doubleValue))
+        }
+    }
+}
+
+enum SubscriptionStyle: String, CaseIterable, Identifiable {
+    /// 一行胶囊
+    case capsule
+    /// 横向柱状图（每个指标一行）
+    case bars
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .capsule: return L.t("胶囊", "Capsule")
+        case .bars: return L.t("柱状图", "Bars")
+        }
+    }
+
+    /// 兼容旧值：overview / inline 都归到胶囊
+    static func stored(_ raw: String?) -> SubscriptionStyle {
+        switch raw {
+        case "bars": return .bars
+        default: return .capsule
+        }
+    }
+}
+
+enum SubscriptionMode: String, CaseIterable, Identifiable {
+    case remaining
+    case used
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .remaining: return L.t("剩余", "Left")
+        case .used: return L.t("已使用", "Used")
+        }
+    }
+}
+
+final class SubscriptionSettings: ObservableObject {
+    static let shared = SubscriptionSettings()
+
+    @Published var mode: SubscriptionMode {
+        didSet { UserDefaults.standard.set(mode.rawValue, forKey: "subscriptionMode") }
+    }
+    @Published var style: SubscriptionStyle {
+        didSet { UserDefaults.standard.set(style.rawValue, forKey: "subscriptionStyle") }
+    }
+
+    init() {
+        let defaults = UserDefaults.standard
+        mode = SubscriptionMode(rawValue: defaults.string(forKey: "subscriptionMode") ?? "") ?? .remaining
+        style = SubscriptionStyle.stored(defaults.string(forKey: "subscriptionStyle"))
+    }
+}
+
 struct ContentView: View {
     let onQuit: () -> Void
 
@@ -4251,6 +4748,8 @@ struct ContentView: View {
     @AppStorage("showHeaderSection") private var showHeaderSection = true
     @AppStorage("showPriceSection") private var showPriceSection = true
     @AppStorage("showUsageSection") private var showUsageSection = true
+    @AppStorage("showSubscriptions") private var showSubscriptions = true
+    @ObservedObject private var subscriptionPrefs = SubscriptionSettings.shared
     @AppStorage("showBalanceSection") private var showBalanceSection = true
     @AppStorage("showFooterSection") private var showFooterSection = true
     @StateObject private var period = PeriodModel()
@@ -4264,7 +4763,9 @@ struct ContentView: View {
     @StateObject private var localUsage = LocalUsageStore()
     @StateObject private var manualCosts = ManualCostStore.shared
     @StateObject private var officialTotals = OfficialTotalsStore()
+    @StateObject private var subscriptions = SubscriptionStore.shared
     @State private var showSources = ProcessInfo.processInfo.arguments.contains("--sources")
+    @State private var hoveringBalance = false
     @State private var pricingRevision = 0
     @AppStorage("usageDisplayMode") private var usageDisplayModeRaw = UsageDisplayMode.numbers.rawValue
 
@@ -4289,6 +4790,9 @@ struct ContentView: View {
                 usageSection
                 Divider()
             }
+            if showSubscriptions, !subscriptions.activeSources.isEmpty {
+                subscriptionSection
+            }
             if showBalanceSection {
                 balanceRow
                 Divider()
@@ -4308,6 +4812,7 @@ struct ContentView: View {
             normalizeSourceSelection()
             officialTotals.refresh(accounts: accounts.accounts)
             usage.refresh(force: true)
+            subscriptions.refresh()
             refreshActiveSource(force: true, runLocal: false)
             UserDefaults.standard.set(Double(panelWidth), forKey: "panelWidth")
             resizeSoon()
@@ -4324,6 +4829,8 @@ struct ContentView: View {
             manualCosts.reload()
             custom.refresh(force: true)
             usage.refresh(force: true)
+            subscriptions.reload()
+            subscriptions.refresh(force: true)
             normalizeSourceSelection()
             official.configure(account: selectedAccount)
             official.refresh(period: usage.selectedPeriod, force: true)
@@ -4502,6 +5009,7 @@ struct ContentView: View {
             showHeaderSection,
             showPriceSection,
             showUsageSection,
+            showSubscriptions,
             showBalanceSection,
             showFooterSection,
         ].filter { $0 }.count
@@ -4825,6 +5333,151 @@ struct ContentView: View {
 
     private var periodOptions: [(id: String, title: String)] {
         UsagePeriod.allCases.map { (id: $0.rawValue, title: periodTitle($0)) }
+    }
+
+    private var subscriptionStyle: SubscriptionStyle { subscriptionPrefs.style }
+
+    private var subscriptionMode: SubscriptionMode { subscriptionPrefs.mode }
+
+    private var subscriptionSection: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(subscriptions.activeSources) { source in
+                subscriptionRow(source)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 4)
+        .padding(.bottom, 2)
+        .frame(minHeight: subscriptionStyle == .bars ? 54 : 20, alignment: .leading)
+    }
+
+    private func subscriptionRow(_ source: SubscriptionSource) -> some View {
+        let result = subscriptions.results[source.id]
+        let values = result?.values ?? []
+        let title = source.name.isEmpty ? L.t("订阅", "Plan") : source.name
+        let isFirst = subscriptions.activeSources.first?.id == source.id
+        let refreshButton = Button {
+            balance.refresh(token: balanceAccount?.token, force: true)
+            subscriptions.refresh(force: true)
+        } label: {
+            Image(systemName: "arrow.clockwise")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.secondary)
+        }
+        .buttonStyle(.plain)
+        .help(L.t("刷新余额与订阅", "Refresh balance and plans"))
+
+        return Group {
+            if subscriptionStyle == .bars {
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(spacing: 6) {
+                        Text(title)
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                        Spacer(minLength: 2)
+                        if isFirst {
+                            refreshButton
+                        }
+                    }
+
+                    if values.isEmpty {
+                        Text(result?.error ?? L.t("读取中…", "Loading…"))
+                            .font(.system(size: 9))
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(1)
+                    } else {
+                        subscriptionBars(values)
+                    }
+                }
+            } else {
+                HStack(spacing: 5) {
+                    Text(title)
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .padding(.trailing, 8)
+
+                    if values.isEmpty {
+                        Text(result?.error ?? L.t("读取中…", "Loading…"))
+                            .font(.system(size: 9))
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(1)
+                    } else {
+                        ForEach(values) { value in
+                            subscriptionCapsule(value.label, value, ghost: false)
+                        }
+                    }
+
+                    Spacer(minLength: 2)
+                    if isFirst {
+                        refreshButton
+                    }
+                }
+            }
+        }
+    }
+
+    private func subscriptionBars(_ values: [SubscriptionMetricValue]) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            ForEach(values) { value in
+                let percent = subscriptionMode == .used ? value.used : value.remainingPercent
+                HStack(spacing: 6) {
+                    Text(value.label)
+                        .font(.system(size: 9))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24, alignment: .leading)
+
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Capsule()
+                                .fill(Color.primary.opacity(0.06))
+                            Capsule()
+                                .fill(subscriptionColor(percent).opacity(0.45))
+                                .frame(width: max(2, geometry.size.width * CGFloat(percent ?? 0) / 100))
+                        }
+                    }
+                    .frame(height: 4)
+
+                    Text(percent.map { "\(Int($0.rounded()))%" } ?? "—")
+                        .font(.system(size: 9, weight: .medium, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, alignment: .trailing)
+                }
+            }
+        }
+    }
+
+    private func subscriptionCapsule(_ label: String, _ value: SubscriptionMetricValue, ghost: Bool) -> some View {
+        let percent = subscriptionMode == .used ? value.used : value.remainingPercent
+        let rounded = percent.map { Int($0.rounded()) }
+        let color = subscriptionColor(percent)
+
+        return HStack(spacing: 3) {
+            Text(label)
+                .font(.system(size: 10, weight: .medium))
+                .opacity(0.8)
+            Text(rounded.map { "\($0)%" } ?? "—")
+                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                .monospacedDigit()
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 3.5)
+        .background(ghost ? Color.primary.opacity(0.05) : color.opacity(0.10), in: Capsule())
+        .foregroundStyle(ghost ? Color.secondary : color.opacity(0.88))
+    }
+
+    private func subscriptionColor(_ percent: Double?) -> Color {
+        guard let percent else { return .secondary }
+        if subscriptionMode == .used {
+            if percent >= 90 { return .red }
+            if percent >= 70 { return .orange }
+            return Theme.accent
+        }
+        if percent <= 10 { return .red }
+        if percent <= 30 { return .orange }
+        return Theme.accent
     }
 
     private var usageSection: some View {
@@ -5867,24 +6520,37 @@ struct ContentView: View {
 
             Spacer()
 
-            Button(L.t("充值", "Top up")) {
-                NSWorkspace.shared.open(OfficialLinks.topUp)
+            if subscriptions.activeSources.isEmpty {
+                Button {
+                    balance.refresh(token: balanceAccount?.token, force: true)
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .help("刷新余额")
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-
-            Button {
-                balance.refresh(token: balanceAccount?.token, force: true)
-            } label: {
-                Image(systemName: "arrow.clockwise")
-                    .font(.system(size: 9, weight: .semibold))
-                    .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.plain)
-            .help("刷新余额")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+        .contentShape(Rectangle())
+        .overlay(alignment: .trailing) {
+            if hoveringBalance {
+                Button(L.t("充值", "Top up")) {
+                    NSWorkspace.shared.open(OfficialLinks.topUp)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .padding(.trailing, 16)
+                .transition(.opacity)
+            }
+        }
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.12)) {
+                hoveringBalance = hovering
+            }
+        }
     }
 
     private func balanceText(_ snapshot: BalanceSnapshot) -> String {
@@ -5943,9 +6609,10 @@ struct SettingsView: View {
     @AppStorage("showHeaderSection") private var showHeaderSection = true
     @AppStorage("showPriceSection") private var showPriceSection = true
     @AppStorage("showUsageSection") private var showUsageSection = true
+    @AppStorage("showSubscriptions") private var showSubscriptions = true
+    @ObservedObject private var subscriptionPrefs = SubscriptionSettings.shared
     @AppStorage("showBalanceSection") private var showBalanceSection = true
     @AppStorage("showFooterSection") private var showFooterSection = true
-    @AppStorage("usageDisplayMode") private var usageDisplayModeRaw = UsageDisplayMode.numbers.rawValue
     @AppStorage("autoCheckUpdates") private var autoCheckUpdates = true
     @AppStorage("appIcon") private var appIconRaw = AppIconChoice.retro.rawValue
     @AppStorage("statusRingStyle") private var ringStyleRaw = StatusRingStyle.soft.rawValue
@@ -5956,6 +6623,7 @@ struct SettingsView: View {
     @State private var showRestoreConfirm = false
 
     @ObservedObject private var manualCosts = ManualCostStore.shared
+    @ObservedObject private var subscriptions = SubscriptionStore.shared
     @State private var costName = ""
     @State private var costAmount = ""
     @State private var costDate = Date()
@@ -5965,11 +6633,217 @@ struct SettingsView: View {
     @State private var launchAtLogin = LoginItem.isOn
     @State private var showDockIcon = UserDefaults.standard.object(forKey: "showDockIcon") as? Bool ?? false
 
+    @State private var probeResults: [UUID: [(String, Double)]] = [:]
+    @State private var probeErrors: [UUID: String] = [:]
+    @State private var probing: UUID?
+
     @State private var priceTierRaw = Tier.flash.rawValue
     @State private var priceDraft: [String: String] = [:]
     @State private var priceMessage: String?
     @State private var priceSourceURL = PricingSource.urlString
     @State private var importingPrices = false
+
+    private func subscriptionEditor(_ source: Binding<SubscriptionSource>) -> some View {
+        let value = source.wrappedValue
+        let detected = probeResults[value.id] ?? []
+        let probeError = probeErrors[value.id]
+
+        return DisclosureGroup {
+            VStack(alignment: .leading, spacing: 6) {
+                TextField(L.t("名称，例如 Claude Pro", "Name, e.g. Claude Pro"), text: source.name)
+                    .textFieldStyle(.roundedBorder)
+
+                HStack(spacing: 6) {
+                    TextField(L.t("接口地址（https）", "Endpoint (https)"), text: source.url)
+                        .textFieldStyle(.roundedBorder)
+
+                    Button(probing == value.id ? L.t("识别中…", "Reading…") : L.t("识别字段", "Detect")) {
+                        probe(source)
+                    }
+                    .controlSize(.small)
+                    .disabled(probing == value.id)
+                }
+
+                if let probeError {
+                    Text(probeError)
+                        .font(.system(size: 9))
+                        .foregroundStyle(.red)
+                }
+
+                HStack(spacing: 6) {
+                    Picker("", selection: source.auth) {
+                        ForEach(SubscriptionAuth.allCases) { auth in
+                            Text(auth.title).tag(auth)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+
+                    if value.auth != .none {
+                        SecureField(L.t("Key", "Key"), text: source.token)
+                            .textFieldStyle(.roundedBorder)
+                    }
+                }
+
+                if value.auth == .header {
+                    TextField(L.t("Header 名称", "Header name"), text: source.headerName)
+                        .textFieldStyle(.roundedBorder)
+                }
+
+                ForEach(source.metrics) { $metric in
+                    metricEditor($metric, source: source, detected: detected)
+                }
+
+                HStack(spacing: 8) {
+                    Button(L.t("＋ 指标", "＋ Metric")) {
+                        source.wrappedValue.metrics.append(SubscriptionMetric(label: ""))
+                    }
+                    .controlSize(.small)
+
+                    Button(L.t("刷新", "Refresh")) {
+                        subscriptions.refresh(sourceID: value.id, force: true)
+                    }
+                    .controlSize(.small)
+
+                    Spacer()
+
+                    Button {
+                        subscriptions.remove(value.id)
+                    } label: {
+                        Text(L.t("删除", "Delete"))
+                    }
+                    .controlSize(.small)
+                }
+
+                Text(statusText(for: value.id))
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.top, 4)
+        } label: {
+            HStack(spacing: 6) {
+                Text(value.name.isEmpty ? L.t("未命名订阅", "Untitled plan") : value.name)
+                    .font(.system(size: 11, weight: .medium))
+                if !value.enabled {
+                    Text(L.t("已关闭", "off"))
+                        .font(.system(size: 9))
+                        .foregroundStyle(.tertiary)
+                }
+                Spacer()
+                Toggle("", isOn: source.enabled)
+                    .toggleStyle(.switch)
+                    .controlSize(.mini)
+                    .labelsHidden()
+            }
+        }
+        .font(.system(size: 11))
+    }
+
+    private func metricEditor(
+        _ metric: Binding<SubscriptionMetric>,
+        source: Binding<SubscriptionSource>,
+        detected: [(String, Double)]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 6) {
+                TextField(L.t("标签", "Label"), text: metric.label)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 58)
+
+                if detected.isEmpty {
+                    TextField(L.t("数值路径", "Value path"), text: metric.path)
+                        .textFieldStyle(.roundedBorder)
+                } else {
+                    Menu {
+                        ForEach(detected.indices, id: \.self) { index in
+                            Button("\(detected[index].0) = \(formatProbe(detected[index].1))") {
+                                metric.wrappedValue.path = detected[index].0
+                            }
+                        }
+                    } label: {
+                        Text(metric.wrappedValue.path.isEmpty ? L.t("选择字段", "Pick a field") : metric.wrappedValue.path)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .menuStyle(.borderlessButton)
+                    .frame(maxWidth: .infinity)
+                }
+
+                Picker("", selection: metric.kind) {
+                    ForEach(SubscriptionMetric.Kind.allCases) { kind in
+                        Text(kind.title).tag(kind)
+                    }
+                }
+                .labelsHidden()
+                .frame(width: 92)
+
+                Button {
+                    let id = metric.wrappedValue.id
+                    source.wrappedValue.metrics.removeAll { $0.id == id }
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.borderless)
+            }
+
+            if metric.wrappedValue.kind == .ratio {
+                TextField(L.t("总量路径", "Total path"), text: metric.totalPath)
+                    .textFieldStyle(.roundedBorder)
+            }
+
+            TextField(L.t("重置时间路径（可选）", "Reset path (optional)"), text: metric.resetPath)
+                .textFieldStyle(.roundedBorder)
+        }
+        .padding(.leading, 8)
+        .overlay(alignment: .leading) {
+            Rectangle()
+                .fill(Color.primary.opacity(0.08))
+                .frame(width: 1)
+        }
+    }
+
+    private func formatProbe(_ value: Double) -> String {
+        if value == value.rounded() { return String(Int(value)) }
+        return String(format: "%.4g", value)
+    }
+
+    private func probe(_ source: Binding<SubscriptionSource>) {
+        let value = source.wrappedValue
+        probing = value.id
+        probeErrors[value.id] = nil
+        SubscriptionProbe.fetch(value) { paths, error in
+            DispatchQueue.main.async {
+                probing = nil
+                if let error {
+                    probeErrors[value.id] = error
+                } else if paths.isEmpty {
+                    probeErrors[value.id] = L.t("接口里没找到数字字段", "No numeric fields found")
+                } else {
+                    probeResults[value.id] = paths
+                }
+            }
+        }
+    }
+
+    private func statusText(for id: UUID) -> String {
+        guard let result = subscriptions.results[id] else {
+            return L.t("还没有请求过", "Not fetched yet")
+        }
+        if let error = result.error {
+            return L.t("读取失败：\(error)", "Failed: \(error)")
+        }
+        let values = result.values.compactMap { value -> String? in
+            guard let percent = value.remainingPercent else { return nil }
+            return "\(value.label) 剩 \(Int(percent.rounded()))%"
+        }
+        let time = result.fetchedAt.formatted(date: .omitted, time: .shortened)
+        return values.isEmpty
+            ? L.t("更新于 \(time)", "Updated \(time)")
+            : "\(values.joined(separator: " · "))  ·  \(time)"
+    }
 
     private var ringStyle: StatusRingStyle {
         StatusRingStyle(rawValue: ringStyleRaw) ?? .soft
@@ -6215,6 +7089,7 @@ struct SettingsView: View {
                         Toggle(L.t("时段与倒计时", "Session & countdown"), isOn: $showHeaderSection)
                         Toggle(L.t("模型价格", "Model pricing"), isOn: $showPriceSection)
                         Toggle(L.t("我的用量", "My usage"), isOn: $showUsageSection)
+                        Toggle(L.t("订阅与花费", "Plans & costs"), isOn: $showSubscriptions)
                         Toggle(L.t("余额", "Balance"), isOn: $showBalanceSection)
                         Toggle(L.t("底部说明", "Footer notes"), isOn: $showFooterSection)
                     }
@@ -6222,18 +7097,150 @@ struct SettingsView: View {
                     .onChange(of: showHeaderSection) { _ in notifyResize() }
                     .onChange(of: showPriceSection) { _ in notifyResize() }
                     .onChange(of: showUsageSection) { _ in notifyResize() }
+                    .onChange(of: showSubscriptions) { _ in notifyResize() }
                     .onChange(of: showBalanceSection) { _ in notifyResize() }
                     .onChange(of: showFooterSection) { _ in notifyResize() }
 
-                    sectionTitle(L.t("用量显示", "Usage display"))
+                    sectionTitle(L.t("订阅与花费", "Plans & costs"))
 
-                    Picker("", selection: $usageDisplayModeRaw) {
-                        ForEach(UsageDisplayMode.allCases) { mode in
-                            Text(mode.title).tag(mode.rawValue)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 8) {
+                            Picker("", selection: $subscriptionPrefs.mode) {
+                                ForEach(SubscriptionMode.allCases) { mode in
+                                    Text(mode.title).tag(mode)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+
+                            Picker("", selection: $subscriptionPrefs.style) {
+                                ForEach(SubscriptionStyle.allCases) { style in
+                                    Text(style.title).tag(style)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
                         }
+                        .font(.system(size: 11))
+
+                        ForEach($subscriptions.sources) { $source in
+                            subscriptionEditor($source)
+                        }
+
+                        Menu {
+                            Button(L.t("OpenCode Go（已填好）", "OpenCode Go (prefilled)")) {
+                                subscriptions.add(SubscriptionPreset.opencodeGo())
+                            }
+                            Button(L.t("其他服务", "Other service")) {
+                                subscriptions.add(
+                                    SubscriptionSource(
+                                        name: L.t("新订阅", "New plan"),
+                                        url: "",
+                                        auth: .bearer,
+                                        metrics: [
+                                            SubscriptionMetric(label: L.t("剩余", "Left"), kind: .remainingPercent)
+                                        ]
+                                    )
+                                )
+                            }
+                        } label: {
+                            Text(L.t("＋ 添加订阅", "＋ Add plan"))
+                        }
+                        .menuStyle(.borderlessButton)
+                        .fixedSize()
+
+                        Text(L.t(
+                            "订阅只需要一个返回 JSON 的接口。路径按点分层级填写，例如 usage.rolling.percent；数组用数字下标，例如 data.0.left。只做 GET 请求，数据不外传。",
+                            "A plan needs any JSON endpoint. Paths are dot separated, e.g. usage.rolling.percent; arrays use indexes, e.g. data.0.left. GET only, nothing is uploaded."
+                        ))
+                        .font(.system(size: 9))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                        Divider().padding(.vertical, 2)
+
+                        Text(L.t("手动花费", "Manual costs"))
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(.secondary)
+
+
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text(L.t("订阅费按开始月份累计，一次性花费只计一次；两者都会加入「总花费」",
+                                     "Subscriptions accumulate from the start month; one-time costs count once. Both are added to Total spent"))
+                                .font(.system(size: 9))
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            ForEach(manualCosts.costs) { cost in
+                                HStack(spacing: 8) {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(cost.name)
+                                            .font(.system(size: 10.5, weight: .medium))
+                                        Text(manualCostDetail(cost))
+                                            .font(.system(size: 8.5))
+                                            .foregroundStyle(.tertiary)
+                                    }
+                                    Spacer()
+                                    Text(UsageFormat.money(cost.total))
+                                        .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
+                                        .monospacedDigit()
+                                    Button {
+                                        manualCosts.remove(id: cost.id)
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .font(.system(size: 9))
+                                    }
+                                    .buttonStyle(.plain)
+                                    .foregroundStyle(.tertiary)
+                                    .help(L.t("删除这条花费", "Delete this cost"))
+                                }
+                                .padding(6)
+                                .background(RoundedRectangle(cornerRadius: 6).fill(Color.secondary.opacity(0.05)))
+                            }
+
+                            if manualCosts.total > 0 {
+                                HStack {
+                                    Text(L.t("手动合计", "Manual total"))
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    Text(UsageFormat.money(manualCosts.total))
+                                        .fontWeight(.semibold)
+                                        .monospacedDigit()
+                                }
+                                .font(.system(size: 10))
+                            }
+
+                            TextField(L.t("名称，例如 ChatGPT Plus", "Name, e.g. ChatGPT Plus"), text: $costName)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.system(size: 10))
+
+                            HStack(spacing: 8) {
+                                TextField(L.t("金额 (\(Money.symbol))", "Amount (\(Money.symbol))"), text: $costAmount)
+                                    .textFieldStyle(.roundedBorder)
+                                    .font(.system(size: 10))
+                                    .frame(width: 80)
+                                DatePicker("", selection: $costDate, in: ...Date(), displayedComponents: .date)
+                                    .labelsHidden()
+                                    .controlSize(.small)
+                                Toggle(L.t("每月订阅", "Monthly"), isOn: $costRecurring)
+                                    .toggleStyle(.checkbox)
+                                    .font(.system(size: 10))
+                            }
+
+                            if let costError {
+                                Text(costError)
+                                    .font(.system(size: 9))
+                                    .foregroundStyle(.red)
+                            }
+
+                            Button(L.t("添加花费", "Add cost")) {
+                                addManualCost()
+                            }
+                            .controlSize(.small)
+                            .disabled(costName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        }
+
                     }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
                     .font(.system(size: 11))
 
                     sectionTitle(L.t("启动", "Startup"))
@@ -6317,99 +7324,6 @@ struct SettingsView: View {
                         }
                     }
 
-                    sectionTitle(L.t("手动花费", "Manual costs"))
-
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text(L.t("订阅费按开始月份累计，一次性花费只计一次；两者都会加入「总花费」",
-                                 "Subscriptions accumulate from the start month; one-time costs count once. Both are added to Total spent"))
-                            .font(.system(size: 9))
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-
-                        ForEach(manualCosts.costs) { cost in
-                            HStack(spacing: 8) {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(cost.name)
-                                        .font(.system(size: 10.5, weight: .medium))
-                                    Text(manualCostDetail(cost))
-                                        .font(.system(size: 8.5))
-                                        .foregroundStyle(.tertiary)
-                                }
-                                Spacer()
-                                Text(UsageFormat.money(cost.total))
-                                    .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-                                    .monospacedDigit()
-                                Button {
-                                    manualCosts.remove(id: cost.id)
-                                } label: {
-                                    Image(systemName: "trash")
-                                        .font(.system(size: 9))
-                                }
-                                .buttonStyle(.plain)
-                                .foregroundStyle(.tertiary)
-                                .help(L.t("删除这条花费", "Delete this cost"))
-                            }
-                            .padding(6)
-                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.secondary.opacity(0.05)))
-                        }
-
-                        if manualCosts.total > 0 {
-                            HStack {
-                                Text(L.t("手动合计", "Manual total"))
-                                    .foregroundStyle(.secondary)
-                                Spacer()
-                                Text(UsageFormat.money(manualCosts.total))
-                                    .fontWeight(.semibold)
-                                    .monospacedDigit()
-                            }
-                            .font(.system(size: 10))
-                        }
-
-                        TextField(L.t("名称，例如 ChatGPT Plus", "Name, e.g. ChatGPT Plus"), text: $costName)
-                            .textFieldStyle(.roundedBorder)
-                            .font(.system(size: 10))
-
-                        HStack(spacing: 8) {
-                            TextField(L.t("金额 (\(Money.symbol))", "Amount (\(Money.symbol))"), text: $costAmount)
-                                .textFieldStyle(.roundedBorder)
-                                .font(.system(size: 10))
-                                .frame(width: 80)
-                            DatePicker("", selection: $costDate, in: ...Date(), displayedComponents: .date)
-                                .labelsHidden()
-                                .controlSize(.small)
-                            Toggle(L.t("每月订阅", "Monthly"), isOn: $costRecurring)
-                                .toggleStyle(.checkbox)
-                                .font(.system(size: 10))
-                        }
-
-                        if let costError {
-                            Text(costError)
-                                .font(.system(size: 9))
-                                .foregroundStyle(.red)
-                        }
-
-                        Button(L.t("添加花费", "Add cost")) {
-                            addManualCost()
-                        }
-                        .controlSize(.small)
-                        .disabled(costName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    }
-
-                    sectionTitle(L.t("关于", "About"))
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Button(L.t("更新日志", "Changelog")) {
-                            ChangelogWindowController.shared.show()
-                        }
-                        .controlSize(.small)
-
-                        Button(L.t("反馈", "Feedback")) {
-                            if let url = URL(string: "https://github.com/0xTack/TokenPeek/issues/new") {
-                                NSWorkspace.shared.open(url)
-                            }
-                        }
-                        .controlSize(.small)
-                    }
                 }
                 .padding(.trailing, 4)
             }
@@ -8612,6 +9526,35 @@ if CommandLine.arguments.contains("--custom-usage") {
     } else {
         print("未找到自定义用量文件：\(CustomUsageFile.fileURL.path)")
     }
+    exit(0)
+}
+
+if CommandLine.arguments.contains("--subscriptions") {
+    SubscriptionStore.shared.reload()
+    let sources = SubscriptionStore.shared.activeSources
+    guard !sources.isEmpty else {
+        print("还没有配置订阅。打开设置 → 订阅监控 添加。")
+        exit(0)
+    }
+    let group = DispatchGroup()
+    for source in sources {
+        group.enter()
+        SubscriptionLoader.fetch(source) { result in
+            let title = source.name.isEmpty ? source.url : source.name
+            if let error = result.error {
+                print("\(title)：读取失败（\(error)）")
+            } else {
+                print(title + "：")
+                for value in result.values {
+                    let left = value.remainingPercent.map { "\(Int($0.rounded()))%" } ?? "—"
+                    let used = value.used.map { "\(Int($0.rounded()))%" } ?? "—"
+                    print("  \(value.label)：剩 \(left) · 已用 \(used)")
+                }
+            }
+            group.leave()
+        }
+    }
+    group.wait()
     exit(0)
 }
 
