@@ -5,7 +5,7 @@ window.DEEPSEEK_RELEASE = {
     "mac": "1.5",
     "windows": "1.3"
   },
-  "base": "https://github.com/0xTack/tokenpeek/releases/download/v1.5/",
+  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.5/",
   "downloads": [
     {
       "id": "mac-arm64",
