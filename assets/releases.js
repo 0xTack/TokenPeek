@@ -1,34 +1,33 @@
 window.DEEPSEEK_RELEASE = {
-  "version": "1.6",
-  "date": "2026-11-02",
+  "version": "1.7",
+  "date": "2026-11-03",
   "versions": {
-    "mac": "1.6",
-    "windows": "1.3"
+    "mac": "1.7"
   },
-  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.6/",
+  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.7/",
   "downloads": [
     {
       "id": "mac-arm64",
       "platform": "macOS",
       "name": "Apple Silicon",
       "arch": "arm64",
-      "version": "1.6",
+      "version": "1.7",
       "min": "macOS 14 Sonoma 或更高",
       "recommended": true,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.6-AppleSilicon.dmg",
+          "file": "TokenPeek-1.7-AppleSilicon.dmg",
           "size": "4.2 MB",
-          "sha256": "dbf3cfd1a7985ed8b5a02b3c9c6cd5f370fdd27f5ada4736bae26159ed9d3ab4"
+          "sha256": "9516b702fa14074a6efbe2e4dca5d0c18c74200023f40fd7ddf5e99fe6bf0f92"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.6-AppleSilicon.zip",
-          "size": "3.8 MB",
-          "sha256": "52d11fe04ee0c5bc6509769bbfba3403e5c07233642c28b0da913833743d8580"
+          "file": "TokenPeek-1.7-AppleSilicon.zip",
+          "size": "3.9 MB",
+          "sha256": "66d13265027abe8e708b71078713a72582c21b85aaa2c074180573cdc5b86a8a"
         }
       ]
     },
@@ -37,46 +36,36 @@ window.DEEPSEEK_RELEASE = {
       "platform": "macOS",
       "name": "Intel",
       "arch": "x86_64",
-      "version": "1.6",
+      "version": "1.7",
       "min": "macOS 13 Ventura 或更高",
       "recommended": false,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.6-Intel.dmg",
+          "file": "TokenPeek-1.7-Intel.dmg",
           "size": "4.3 MB",
-          "sha256": "9e854599b05e9bea186faf15335a7191af56305b2141e0d30d5af6cbfaf101c7"
+          "sha256": "3dd9e033cc124a01bc1f3ffd54b92a0230a4e7fa2cf7e4d3bcba0ee1a3c395b4"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.6-Intel.zip",
+          "file": "TokenPeek-1.7-Intel.zip",
           "size": "3.9 MB",
-          "sha256": "810f3eb1b35fdd52db2e6b5b22ffd287786c30030bd57d0ec29835ab9aa9c050"
-        }
-      ]
-    },
-    {
-      "id": "windows-x64",
-      "platform": "Windows",
-      "name": "Windows 11",
-      "arch": "x64",
-      "version": "1.3",
-      "min": "Windows 11 / Windows 10 21H2+",
-      "recommended": false,
-      "files": [
-        {
-          "type": "zip",
-          "label": "下载 .zip",
-          "file": "DeepSeekDashboard-1.3-Windows-x64.zip",
-          "size": "152.7 MB",
-          "sha256": "61dd5a917675d0b703c1bbcd5394096c526b397da972fc2e2114ab666a7b538a"
+          "sha256": "73d316e09e72344bd210029c803d307cc96ca8594a35438e31e5966bbfe4283d"
         }
       ]
     }
   ],
   "history": [
+    {
+      "version": "1.7",
+      "date": "2026-11-03",
+      "notes": [
+        "启动时不再自动弹出主窗口，只在菜单栏驻留；需要时点右键菜单「打开主窗口」",
+        "「我的用量」在没有数据时保留完整版面：显示零值和空状态，可直接「接入来源」或「刷新」，面板不再塌缩变形"
+      ]
+    },
     {
       "version": "1.6",
       "date": "2026-11-02",

@@ -18,7 +18,6 @@ const SITE_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const RELEASES_FILE = path.join(SITE_DIR, 'assets', 'releases.js');
 const DOWNLOAD_DIR = path.join(SITE_DIR, 'downloads');
 const MAC_DIST = path.resolve(SITE_DIR, '..', 'dist');
-const WIN_DIST = path.resolve(SITE_DIR, '..', 'windows', 'dist');
 
 const args = process.argv.slice(2);
 const hasFlag = (name) => args.includes(name);
@@ -67,8 +66,8 @@ const PLATFORMS = [
     arch: 'arm64',
     min: 'macOS 14 Sonoma 或更高',
     recommended: true,
-    sourceStem: (version) => `DeepSeek仪表盘-${version}-AppleSilicon`,
-    releaseStem: (version) => `DeepSeek-Dashboard-${version}-AppleSilicon`,
+    sourceStem: (version) => `TokenPeek-${version}-AppleSilicon`,
+    releaseStem: (version) => `TokenPeek-${version}-AppleSilicon`,
     sourceDir: MAC_DIST,
     types: ['dmg', 'zip'],
   },
@@ -79,22 +78,10 @@ const PLATFORMS = [
     arch: 'x86_64',
     min: 'macOS 13 Ventura 或更高',
     recommended: false,
-    sourceStem: (version) => `DeepSeek仪表盘-${version}-Intel`,
-    releaseStem: (version) => `DeepSeek-Dashboard-${version}-Intel`,
+    sourceStem: (version) => `TokenPeek-${version}-Intel`,
+    releaseStem: (version) => `TokenPeek-${version}-Intel`,
     sourceDir: MAC_DIST,
     types: ['dmg', 'zip'],
-  },
-  {
-    id: 'windows-x64',
-    platform: 'Windows',
-    name: 'Windows 11',
-    arch: 'x64',
-    min: 'Windows 11 / Windows 10 21H2+',
-    recommended: false,
-    sourceStem: (version) => `DeepSeekDashboard-${version}-Windows-x64`,
-    releaseStem: (version) => `DeepSeekDashboard-${version}-Windows-x64`,
-    sourceDir: WIN_DIST,
-    types: ['zip'],
   },
 ];
 
@@ -108,7 +95,7 @@ function collectPlatforms(data, versions, { copy, allowMissing }) {
 
   for (const spec of PLATFORMS) {
     const existing = findExisting(data, spec.id);
-    const version = spec.id.startsWith('mac') ? versions.mac : versions.windows;
+    const version = versions.mac;
     const files = [];
 
     for (const type of spec.types) {
@@ -235,12 +222,11 @@ const copy = !hasFlag('--no-copy');
 const allowMissing = hasFlag('--allow-missing');
 const base = option('--base', data.base || 'downloads/');
 const macVersion = option('--mac-version', version);
-const windowsVersion = option('--windows-version', version);
-const versions = { mac: macVersion, windows: windowsVersion };
+const versions = { mac: macVersion };
 
 console.log(`准备发布 v${version}（${date}）...`);
-if (macVersion !== version || windowsVersion !== version) {
-  console.log(`平台版本：macOS v${macVersion} · Windows v${windowsVersion}`);
+if (macVersion !== version) {
+  console.log(`平台版本：macOS v${macVersion}`);
 }
 if (copy) console.log('从构建目录复制安装包到 site/downloads/ ...');
 
@@ -265,8 +251,8 @@ writeRelease(data);
 console.log('');
 console.log(`已更新 ${path.relative(process.cwd(), RELEASES_FILE)}`);
 console.log(`版本：v${version}  ${date}`);
-if (versions.mac !== version || versions.windows !== version) {
-  console.log(`平台版本：macOS v${versions.mac} · Windows v${versions.windows}`);
+if (versions.mac !== version) {
+  console.log(`平台版本：macOS v${versions.mac}`);
 }
 for (const item of downloads) {
   const files = item.files.map((file) => `${file.type.toUpperCase()} ${file.size}`).join(' · ');
@@ -281,6 +267,6 @@ console.log('下一步：');
 console.log('  1. 本地预览：cd site && python3 -m http.server 8080');
 console.log('  2. 上传 site/ 到静态托管（GitHub Pages / Cloudflare Pages / 任意服务器）');
 if (base.startsWith('downloads/')) {
-  console.log('  3. Windows 包超过 100 MB 时，GitHub Pages 无法直接放；');
+  console.log('  3. 单文件超过 100 MB 时，GitHub Pages 无法直接放；');
   console.log('     建议把安装包放到 GitHub Releases，再用 --base 指向该版本目录。');
 }
