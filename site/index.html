@@ -42,7 +42,7 @@
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="container hero-grid">
         <div class="hero-copy">
-          <span class="pill"><span class="pill-dot"></span>已适配 DeepSeek · macOS 1.6 已发布</span>
+          <span class="pill"><span class="pill-dot"></span>已适配 DeepSeek · macOS 1.7 已发布</span>
           <h1><span class="peek-ai">AI<span class="peek-eyes" aria-hidden="true">👀</span></span> 的用量和花费<br /><span class="grad">瞄一眼</span>就够</h1>
           <svg class="squiggle" viewBox="0 0 200 14" fill="none" aria-hidden="true"><path d="M2 9c18-8 34 6 52-1s30-6 48 1 32 5 48-2 30-6 48 2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
           <p class="lede">
@@ -229,7 +229,7 @@
           <article class="feature">
             <div class="ficon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
             <h3>免费开源 / 本地优先</h3>
-            <p>MIT 协议，Apple Silicon / Intel / Windows 都能用；不登录也能查看 OpenCode 和自定义来源。</p>
+            <p>MIT 协议，Apple Silicon / Intel 都能用；不登录也能查看 OpenCode 和自定义来源。</p>
           </article>
         </div>
       </div>
@@ -239,8 +239,8 @@
       <div class="container">
         <div class="section-head">
           <span class="eyebrow">下载</span>
-          <h2>选择你的系统</h2>
-          <p>当前版本 macOS 1.6 · Windows 1.3。安装包免费，MIT 开源；macOS 版约 4 MB，Windows 版内置 Chromium，约 153 MB。</p>
+          <h2>下载 macOS 版</h2>
+          <p>当前版本 macOS 1.7。安装包免费，MIT 开源；macOS 版约 4 MB。</p>
         </div>
         <div class="downloads" id="download-grid">
           <noscript><p>请启用 JavaScript 查看下载链接。</p></noscript>
@@ -248,11 +248,11 @@
         <div class="download-note">
           <div>
             <strong>首次打开提示</strong>
-            <p>安装包使用 ad-hoc 签名，没有 Apple 公证 / Windows 代码签名。macOS 请右键 App → 打开；Windows 如遇 SmartScreen，点「更多信息 → 仍要运行」。<a href="macos-open.html">macOS 打不开？查看打开说明 →</a></p>
+            <p>安装包使用 ad-hoc 签名，没有 Apple 公证。首次打开请右键 App → 打开。<a href="macos-open.html">macOS 打不开？查看打开说明 →</a></p>
           </div>
           <div>
             <strong>校验安装包</strong>
-            <p>点击卡片里的校验值可复制 SHA-256。macOS 可用 <code>shasum -a 256 文件名</code>，Windows 可用 <code>certutil -hashfile 文件名 SHA256</code>。</p>
+            <p>点击卡片里的校验值可复制 SHA-256。macOS 可用 <code>shasum -a 256 文件名</code>。</p>
           </div>
         </div>
       </div>
@@ -269,18 +269,16 @@
             <span class="step-num">01</span>
             <h3>安装 App</h3>
             <p><strong>macOS：</strong>打开 DMG，把「TokenPeek」拖进 Applications。也可以解压 ZIP 后拖入。</p>
-            <p><strong>Windows：</strong>解压 ZIP，把文件夹放到任意位置，双击 <code>DeepSeekDashboard.exe</code>。</p>
           </article>
           <article class="step">
             <span class="step-num">02</span>
             <h3>第一次打开</h3>
             <p><strong>macOS：</strong>右键 App → 打开 → 再点「打开」；或执行 <code>xattr -dr com.apple.quarantine "/Applications/TokenPeek.app"</code>。<a href="macos-open.html">打不开？看详细说明</a></p>
-            <p><strong>Windows：</strong>SmartScreen 提示时点「更多信息」→「仍要运行」。</p>
           </article>
           <article class="step">
             <span class="step-num">03</span>
             <h3>看数据</h3>
-            <p>点菜单栏 / 托盘的图标。用 OpenCode 的会自动读取本机数据库；要看官方账户，点「登录官方账户」获取 Token。</p>
+            <p>点菜单栏的图标。用 OpenCode 的会自动读取本机数据库；要看官方账户，点「登录官方账户」获取 Token。</p>
             <p>没有 OpenCode 也能用「自定义 App」上报，或直接查看时段与用量。</p>
           </article>
         </div>
@@ -331,12 +329,8 @@
             <p>所有已登录官方账号的历史累计 + OpenCode / 自定义 / 本地来源 + 手动记录。官方账号存在时，OpenCode 的 DeepSeek 部分会自动排除，避免重复计算。</p>
           </details>
           <details>
-            <summary>Windows 版为什么这么大？</summary>
-            <p>Windows 版基于 Electron，自带 Chromium 运行时，因此压缩包约 153 MB。好处是免安装、不依赖 .NET 或 Node，解压双击就能用。</p>
-          </details>
-          <details>
             <summary>怎么升级？数据会丢吗？</summary>
-            <p>下载新版本覆盖旧 App 即可。设置、缓存、自定义用量都在系统数据目录（macOS：<code>~/Library/Application Support/DeepSeekCost</code>；Windows：<code>%APPDATA%\DeepSeekCost</code>），不会随 App 删除。</p>
+            <p>下载新版本覆盖旧 App 即可。设置、缓存、自定义用量都在系统数据目录（<code>~/Library/Application Support/DeepSeekCost</code>），不会随 App 删除。</p>
           </details>
         </div>
       </div>
@@ -367,7 +361,7 @@
       <div class="footer-brand">
         <img src="assets/icon-tokenpeek.png" alt="" width="22" height="22" />
         <span>TokenPeek</span>
-        <span class="footer-version">macOS 1.6 · Windows 1.3</span>
+        <span class="footer-version">macOS 1.7</span>
       </div>
       <div class="footer-links">
         <a href="#features">功能</a>

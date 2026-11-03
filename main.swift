@@ -5610,6 +5610,11 @@ struct ContentView: View {
 
                         rankingToggle(sourceEntries.count)
                         trendBlock
+                    } else if !hasAnyUsage {
+                        usageEmptyCard(
+                            title: L.t("还没有接入用量数据", "No usage data yet"),
+                            detail: L.t("先在 OpenCode 里对话几轮，或接入一个来源", "Have a few turns in OpenCode, or connect a source")
+                        )
                     } else {
                         Text(L.t("该时段还没有用量", "No usage in this period"))
                             .font(.system(size: 10))
@@ -5618,13 +5623,15 @@ struct ContentView: View {
 
                     hitRateBlock
                 case .unavailable:
-                    Text("未找到本机 OpenCode 用量记录")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
+                    usageZeroState(
+                        L.t("还没有接入用量数据", "No usage data yet"),
+                        L.t("先在 OpenCode 里对话几轮，或接入一个来源", "Have a few turns in OpenCode, or connect a source")
+                    )
                 case .failed:
-                    Text("读取失败，可点右上角刷新")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
+                    usageZeroState(
+                        L.t("用量读取失败", "Failed to read usage"),
+                        L.t("点右上角刷新重试，或先接入一个来源", "Refresh to retry, or connect a source first")
+                    )
                 }
             }
 
@@ -5644,6 +5651,64 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
+    }
+
+    // MARK: - 空状态
+
+    /// 该来源在所有区间都没有用量。
+    private var hasAnyUsage: Bool {
+        [UsagePeriod.today, .week, .month, .all].contains { localBucket($0).tokens > 0 }
+    }
+
+    private func usageEmptyCard(title: String, detail: String) -> some View {
+        VStack(spacing: 6) {
+            Image(systemName: "chart.line.uptrend.xyaxis")
+                .font(.system(size: 17, weight: .light))
+                .foregroundStyle(.tertiary)
+            Text(title)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(.secondary)
+            Text(detail)
+                .font(.system(size: 9))
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 10) {
+                Button(L.t("接入来源", "Add source")) { showSources = true }
+                Button(L.t("刷新", "Refresh")) { refreshActiveSource(force: true, runLocal: true) }
+            }
+            .buttonStyle(.borderless)
+            .font(.system(size: 10))
+        }
+        .frame(maxWidth: .infinity, minHeight: 172)
+    }
+
+    /// 完全读不到数据时：保留完整行结构，避免面板塌缩。
+    private func usageZeroState(_ title: String, _ detail: String) -> some View {
+        VStack(alignment: .leading, spacing: 7) {
+            ForEach([UsagePeriod.today, .week, .month, .all]) { period in
+                usageRow(period.title, UsageBucket(), showCost: sourceHasCost)
+            }
+
+            if sourceHasCost {
+                HStack(spacing: 4) {
+                    Text(L.t("本地模型已省", "Saved on local models"))
+                        .foregroundStyle(.secondary)
+                    Text("—")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.tertiary)
+                    Text(L.t("按 \(tier.name) 价", "at \(tier.name) pricing"))
+                        .font(.system(size: 8))
+                        .foregroundStyle(.tertiary)
+                    Spacer()
+                }
+                .font(.system(size: 10))
+                .monospacedDigit()
+            }
+
+            usageEmptyCard(title: title, detail: detail)
+            hitRateBlock
+        }
     }
 
     private var sourceEntries: [ApiUsage] {
@@ -8889,10 +8954,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopo
 
         if ProcessInfo.processInfo.arguments.contains("--window") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                self.showMainWindow()
-            }
-        } else if !ProcessInfo.processInfo.arguments.contains("--background") {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.showMainWindow()
             }
         }
