@@ -1,33 +1,33 @@
 window.DEEPSEEK_RELEASE = {
-  "version": "1.7",
-  "date": "2026-11-03",
+  "version": "1.8",
+  "date": "2026-11-04",
   "versions": {
-    "mac": "1.7"
+    "mac": "1.8"
   },
-  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.7/",
+  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.8/",
   "downloads": [
     {
       "id": "mac-arm64",
       "platform": "macOS",
       "name": "Apple Silicon",
       "arch": "arm64",
-      "version": "1.7",
+      "version": "1.8",
       "min": "macOS 14 Sonoma 或更高",
       "recommended": true,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.7-AppleSilicon.dmg",
+          "file": "TokenPeek-1.8-AppleSilicon.dmg",
           "size": "4.2 MB",
-          "sha256": "9516b702fa14074a6efbe2e4dca5d0c18c74200023f40fd7ddf5e99fe6bf0f92"
+          "sha256": "883e8bb1e0146ef0ee97b4a8c3faa635746b607793049e1b0024c406b24b327e"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.7-AppleSilicon.zip",
+          "file": "TokenPeek-1.8-AppleSilicon.zip",
           "size": "3.9 MB",
-          "sha256": "66d13265027abe8e708b71078713a72582c21b85aaa2c074180573cdc5b86a8a"
+          "sha256": "9031f497d135ad7e5f28b4d385107023d6b174958c09b5df369a458bbe66b0bc"
         }
       ]
     },
@@ -36,28 +36,38 @@ window.DEEPSEEK_RELEASE = {
       "platform": "macOS",
       "name": "Intel",
       "arch": "x86_64",
-      "version": "1.7",
+      "version": "1.8",
       "min": "macOS 13 Ventura 或更高",
       "recommended": false,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.7-Intel.dmg",
+          "file": "TokenPeek-1.8-Intel.dmg",
           "size": "4.3 MB",
-          "sha256": "3dd9e033cc124a01bc1f3ffd54b92a0230a4e7fa2cf7e4d3bcba0ee1a3c395b4"
+          "sha256": "e860597ee081632b146957206e98b0478483b14414bb0438f1992ee141f14cc9"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.7-Intel.zip",
+          "file": "TokenPeek-1.8-Intel.zip",
           "size": "3.9 MB",
-          "sha256": "73d316e09e72344bd210029c803d307cc96ca8594a35438e31e5966bbfe4283d"
+          "sha256": "a182c29d597743f15c28b8d87eb8bc033fd2b74f9283ff45240b2eec01627a90"
         }
       ]
     }
   ],
   "history": [
+    {
+      "version": "1.8",
+      "date": "2026-11-04",
+      "notes": [
+        "修复面板偶尔变成白板：跟随系统时，切换深浅色或睡眠唤醒后会自动刷新外观，不用再去设置里重选",
+        "英文界面补齐翻译：节省金额、token 单位、货币名称、订阅周期",
+        "排名行的「省」和金额改为固定列对齐",
+        "订阅接口超时或失败时不再显示错误提示，暂时隐藏该订阅；余额行可一键重试"
+      ]
+    },
     {
       "version": "1.7",
       "date": "2026-11-03",
