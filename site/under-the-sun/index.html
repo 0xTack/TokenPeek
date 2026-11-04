@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Under the Sun · 朝闻天下</title>
+  <meta name="description" content="Under the Sun 是一个 Obsidian 插件：把每天的信息装订成一本可追溯的合订本，支持信息溯源、每日日报、跟踪时间线和 AI 解读。" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Under the Sun 首页">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Under the Sun</span>
+      <span class="brand-cn">朝闻天下</span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="#trace">信息溯源</a>
+      <a href="#volume">合订本</a>
+      <a href="#features">功能</a>
+      <a href="#versions">版本</a>
+      <a href="#install">安装</a>
+      <a href="#works">其他作品</a>
+    </nav>
+    <a class="header-cta" href="https://github.com/0xTack" target="_blank" rel="noopener">GitHub</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">An Obsidian plugin · Daily news, bound and traceable</p>
+        <h1>把每天的信息，<br />装订成一本<br />可追溯的合订本。</h1>
+        <p class="lede">
+          Under the Sun（朝闻天下）把热榜、RSS 和后续报道整理成每天一份的报纸，
+          再把它们按日期装订起来。每条新闻都能回到原文，每个话题都能回到最早的报道。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#install">开始使用</a>
+          <a class="btn" href="#trace">看看它怎么溯源</a>
+        </div>
+        <p class="hero-note">Obsidian 插件 · 完整版仅 macOS · 社区版全平台 · 数据在自己的 vault</p>
+      </div>
+
+      <div class="hero-visual" aria-label="合订本示意">
+        <div class="volume-stack">
+          <div class="volume volume-4"><span class="volume-date">11 / 04</span></div>
+          <div class="volume volume-3"><span class="volume-date">11 / 03</span></div>
+          <div class="volume volume-2"><span class="volume-date">11 / 02</span></div>
+          <div class="volume volume-1">
+            <span class="volume-kicker">每日热点</span>
+            <span class="volume-title">今日<br />合订本</span>
+            <span class="volume-date">11 / 01</span>
+            <span class="volume-rule"></span>
+            <span class="volume-meta">来源 · 时间 · 原文</span>
+          </div>
+        </div>
+        <p class="visual-caption">界面与合订本为示意，不是实际截图</p>
+      </div>
+    </section>
+
+    <section class="section" id="trace" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">01 / Traceability</p>
+        <h2>信息溯源，不只是给一个链接</h2>
+        <p class="section-lede">
+          一条新闻从哪来、谁先报、后来怎么变，应该能一眼看到。
+          Under the Sun 保留来源、时间和原文，并把同一话题的后续报道串成时间线。
+        </p>
+      </div>
+
+      <div class="trace-grid">
+        <div class="trace-copy">
+          <ul class="check-list">
+            <li><strong>来源不合并。</strong>不同平台的报道分别列出，能看到是谁先发、谁跟进。</li>
+            <li><strong>时间不丢。</strong>有发布时间就用发布时间，没有就标明抓取时间。</li>
+            <li><strong>原文可回。</strong>每条都保留原文链接，AI 解读不替代材料。</li>
+            <li><strong>话题可回溯。</strong>勾选跟踪后，自动在本地历史里找更早的报道，补到时间线最前面。</li>
+          </ul>
+          <p class="aside">
+            AI 只做解读，不参与排序；排序只看平台热度、跨源数量和新鲜度。
+          </p>
+        </div>
+
+        <div class="trace-board" aria-label="溯源时间线示意">
+          <div class="trace-item">
+            <span class="trace-dot"></span>
+            <div class="trace-body">
+              <p class="trace-date">最早报道</p>
+              <p class="trace-title">同一件事，第一次出现</p>
+              <p class="trace-source">来源 A · 原文链接</p>
+            </div>
+          </div>
+          <div class="trace-item">
+            <span class="trace-dot"></span>
+            <div class="trace-body">
+              <p class="trace-date">后续跟进</p>
+              <p class="trace-title">第二家媒体补充了背景</p>
+              <p class="trace-source">来源 B · 原文链接</p>
+            </div>
+          </div>
+          <div class="trace-item">
+            <span class="trace-dot"></span>
+            <div class="trace-body">
+              <p class="trace-date">今天</p>
+              <p class="trace-title">新的进展进入日报</p>
+              <p class="trace-source">来源 C · 原文链接</p>
+            </div>
+          </div>
+          <p class="visual-caption">时间线为示意</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="volume" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">02 / Bound volume</p>
+        <h2>每天一份报纸，最后成为一本合订本</h2>
+        <p class="section-lede">
+          不是信息流，是报纸。每天生成一份按日期命名的日报，读完就归档；
+          想翻回某一天，打开那一天的合订本即可。
+        </p>
+      </div>
+
+      <div class="volume-grid">
+        <article class="volume-feature">
+          <h3>按日期装订</h3>
+          <p>日报按 <code>YYYY-MM-DD</code> 命名，天然形成时间顺序。今天的报纸、上周的报纸、上个月的报纸，都在同一个目录里。</p>
+        </article>
+        <article class="volume-feature">
+          <h3>版面固定</h3>
+          <p>头条、要闻、简讯三档，国内红、国外蓝、简讯灰。每天的结构一致，翻起来像同一份报纸，而不是随机卡片。</p>
+        </article>
+        <article class="volume-feature">
+          <h3>状态留在纸上</h3>
+          <p>已读、跟踪、AI 解读都写回当天的 Markdown。换设备、换电脑，打开还是那一页。</p>
+        </article>
+        <article class="volume-feature">
+          <h3>手机也能读</h3>
+          <p>日报和跟踪笔记同步到手机，阅读和 AI 交流直接可用；抓取仍在电脑端完成。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="features" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">03 / Features</p>
+        <h2>不是又一个 RSS 阅读器</h2>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature">
+          <span class="feature-num">01</span>
+          <h3>多源汇总</h3>
+          <p>热榜、RSS、新闻站点统一抓取，补全正文后再进入报纸。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">02</span>
+          <h3>去重与聚类</h3>
+          <p>同一件事的多个来源合并成一组，避免整版都是同一条新闻。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">03</span>
+          <h3>AI 深度解读</h3>
+          <p>事实、报道评价、核心矛盾、反方与判断，明确区分材料与推断。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">04</span>
+          <h3>跟踪时间线</h3>
+          <p>勾选跟踪后，后续报道自动进入时间线，并能回溯到最早来源。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">05</span>
+          <h3>本地优先</h3>
+          <p>日报、跟踪、判断都写在 vault 的 Markdown 里，不锁进数据库。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">06</span>
+          <h3>AI 可选</h3>
+          <p>用自己的 API Key；不开启 AI 也能正常读报、跟踪和归档。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="versions" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">04 / Two editions</p>
+        <h2>完整版与社区版</h2>
+        <p class="section-lede">同一个名字，两种使用方式。按你愿意维护的环境选。</p>
+      </div>
+
+      <div class="edition-grid">
+        <article class="edition">
+          <p class="edition-tag">完整版 · macOS only</p>
+          <h3>热榜、跟踪、判断簿</h3>
+          <p>Python 后端 + Obsidian 插件。适合愿意在电脑上装一次环境、想要完整中文热榜和跟踪能力的人。</p>
+          <ul>
+            <li>多平台热榜 + RSS</li>
+            <li>正文补全、聚类、打分</li>
+            <li>跟踪时间线与历史回溯</li>
+            <li>判断簿与复核</li>
+            <li>手机阅读与 AI 交流</li>
+          </ul>
+          <a class="btn" href="#install">安装完整版</a>
+        </article>
+
+        <article class="edition edition-community">
+          <p class="edition-tag">社区版 · 全平台</p>
+          <h3>纯插件，RSS + AI</h3>
+          <p>不依赖 Python，只读取你自己的 RSS。适合想直接从插件市场安装、轻量使用的人。</p>
+          <ul>
+            <li>RSS / Atom</li>
+            <li>每日 RSS 日报</li>
+            <li>AI 解读与交流</li>
+            <li>桌面与手机</li>
+            <li>不含热榜与跟踪</li>
+          </ul>
+          <a class="btn" href="#install">安装社区版</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="install" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">05 / Install</p>
+        <h2>安装</h2>
+      </div>
+
+      <div class="install-grid">
+        <div class="install-block">
+          <h3>完整版（仅 macOS）</h3>
+          <ol class="steps">
+            <li>下载最新 Release 压缩包（macOS）。</li>
+            <li>解压到 <code>~/code</code> 这类非受保护目录。</li>
+            <li>双击 <code>install.command</code>，按提示完成安装。</li>
+            <li>重启 Obsidian，打开「朝闻天下」主页。</li>
+          </ol>
+          <p class="install-note">仅支持 macOS。需要 Python 3；定时抓取由 launchd 负责。</p>
+        </div>
+
+        <div class="install-block">
+          <h3>社区版</h3>
+          <ol class="steps">
+            <li>在 Obsidian 第三方插件里搜索 <strong>Under the Sun</strong>。</li>
+            <li>安装并启用。</li>
+            <li>在设置里填 RSS 地址和 AI Key。</li>
+            <li>回到主页点「刷新 RSS」。</li>
+          </ol>
+          <p class="install-note">不需要 Python；Windows / macOS / Linux / 手机都能用。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">06 / FAQ</p>
+        <h2>常见问题</h2>
+      </div>
+
+      <details>
+        <summary>数据存在哪里？</summary>
+        <p>日报、跟踪笔记都在 vault 的 Markdown 里；完整版的数据库和抓取缓存在本机项目目录，不会上传。</p>
+      </details>
+      <details>
+        <summary>AI 会替我做判断吗？</summary>
+        <p>不会。AI 负责整理材料、给出可检验的解读；排序和取舍仍按来源、热度和时间，不交给模型。</p>
+      </details>
+      <details>
+        <summary>手机上能抓取吗？</summary>
+        <p>完整版不能，手机只负责阅读和 AI；社区版用 RSS，可以在插件内刷新。</p>
+      </details>
+      <details>
+        <summary>社区版和完整版能同时装吗？</summary>
+        <p>建议不要。两个插件会写入不同目录，但同时启用容易混淆。选一个使用即可。</p>
+      </details>
+      <details>
+        <summary>Windows 可以用吗？</summary>
+        <p>完整版目前只支持 macOS。Windows 和其他系统请用社区版：纯 Obsidian 插件，RSS + AI，不需要 Python。</p>
+      </details>
+      <details>
+        <summary>为什么强调「合订本」？</summary>
+        <p>因为新闻不是刷完就消失的信息流。按日期归档、能回看、能对照，才是一份可以长期使用的资料。</p>
+      </details>
+    </section>
+
+
+    <section class="section" id="works" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">07 / More from the author</p>
+        <h2>同一作者的其他作品</h2>
+        <p class="section-lede">如果这个插件对你有用，可以在作品集里看到我做的其他工具。</p>
+      </div>
+
+      <div class="works-grid">
+        <article class="work-card">
+          <span class="work-kicker">作品集</span>
+          <h3>Tack 的心意</h3>
+          <p>TokenPeek、BlankTop、Under the Sun 等作品都在这里。免费、本地优先、持续打磨。</p>
+          <a href="https://0xtack.github.io/TokenPeek/works.html" target="_blank" rel="noopener">查看全部作品 →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="closing" data-reveal>
+      <p class="eyebrow">Under the Sun</p>
+      <h2>今天的信息，<br />明天还能找回来。</h2>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/0xTack" target="_blank" rel="noopener">去 GitHub</a>
+        <a class="btn" href="#install">再看一遍安装</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-left">
+      <span class="brand-text">Under the Sun</span>
+      <span class="footer-cn">朝闻天下</span>
+    </div>
+    <p class="footer-note">本地优先 · 信息溯源 · 每日合订本</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
