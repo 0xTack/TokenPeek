@@ -102,9 +102,52 @@ final class AppearanceModel: ObservableObject {
     static let shared = AppearanceModel()
 
     @Published private(set) var choice: AppAppearance
+    @Published private(set) var systemScheme: ColorScheme
+
+    private var observers: [NSObjectProtocol] = []
 
     init() {
         choice = AppearanceStore.current
+        systemScheme = Self.currentSystemScheme()
+
+        // 系统外观变化（自动深浅色、睡眠唤醒）时，SwiftUI 的环境色不会自动刷新，
+        // 会让面板停在旧的浅色/深色上。这里主动跟着系统走。
+        let themeName = NSNotification.Name("AppleInterfaceThemeChangedNotification")
+        observers.append(DistributedNotificationCenter.default().addObserver(
+            forName: themeName,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.refreshSystemScheme()
+        })
+        observers.append(NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didWakeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.refreshSystemScheme()
+        })
+        observers.append(NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.refreshSystemScheme()
+        })
+    }
+
+    deinit {
+        observers.forEach { observer in
+            DistributedNotificationCenter.default().removeObserver(observer)
+            NSWorkspace.shared.notificationCenter.removeObserver(observer)
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+
+    private static func currentSystemScheme() -> ColorScheme {
+        let appearance = NSApp?.effectiveAppearance ?? NSAppearance.currentDrawing()
+        let match = appearance.bestMatch(from: [.darkAqua, .aqua])
+        return match == .darkAqua ? .dark : .light
     }
 
     var colorScheme: ColorScheme {
@@ -114,13 +157,21 @@ final class AppearanceModel: ObservableObject {
         case .dark:
             return .dark
         case .system:
-            let match = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua])
-            return match == .darkAqua ? .dark : .light
+            return systemScheme
+        }
+    }
+
+    func refreshSystemScheme() {
+        guard choice == .system else { return }
+        let scheme = Self.currentSystemScheme()
+        if scheme != systemScheme {
+            systemScheme = scheme
         }
     }
 
     func update(_ choice: AppAppearance) {
         self.choice = choice
+        systemScheme = Self.currentSystemScheme()
     }
 }
 
@@ -465,7 +516,7 @@ enum DisplayCurrency: String {
 
     var symbol: String { self == .cny ? "¥" : "$" }
     var code: String { self == .cny ? "CNY" : "USD" }
-    var name: String { self == .cny ? "人民币" : "美元" }
+    var name: String { self == .cny ? L.t("人民币", "CNY") : L.t("美元", "USD") }
     var priceUnit: String {
         self == .cny
             ? L.t("元 / 百万 tokens", "CNY / 1M tokens")
@@ -1927,6 +1978,17 @@ final class UsageStore: ObservableObject {
 enum UsageFormat {
     static func tokens(_ value: Int64) -> String {
         if value <= 0 { return "0" }
+        if L.isEnglish {
+            let v = Double(value)
+            if v >= 1_000_000_000 { return String(format: "%.2fB", v / 1_000_000_000) }
+            if v >= 100_000_000 { return String(format: "%.0fM", v / 1_000_000) }
+            if v >= 1_000_000 { return String(format: "%.1fM", v / 1_000_000) }
+            if v >= 1_000 { return String(format: "%.1fK", v / 1_000) }
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.locale = Locale(identifier: "en_US")
+            return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+        }
         if value >= 100_000_000 {
             return String(format: "%.2f 亿", Double(value) / 100_000_000)
         }
@@ -4790,7 +4852,7 @@ struct ContentView: View {
                 usageSection
                 Divider()
             }
-            if showSubscriptions, !subscriptions.activeSources.isEmpty {
+            if showSubscriptions, !visibleSubscriptionSources.isEmpty {
                 subscriptionSection
             }
             if showBalanceSection {
@@ -5339,9 +5401,17 @@ struct ContentView: View {
 
     private var subscriptionMode: SubscriptionMode { subscriptionPrefs.mode }
 
+    private var visibleSubscriptionSources: [SubscriptionSource] {
+        // 请求失败 / 超时的订阅不显示；读取中的保留，成功后再决定去留。
+        subscriptions.activeSources.filter { source in
+            guard let result = subscriptions.results[source.id] else { return true }
+            return !result.values.isEmpty
+        }
+    }
+
     private var subscriptionSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            ForEach(subscriptions.activeSources) { source in
+            ForEach(visibleSubscriptionSources) { source in
                 subscriptionRow(source)
             }
         }
@@ -5405,7 +5475,7 @@ struct ContentView: View {
                             .lineLimit(1)
                     } else {
                         ForEach(values) { value in
-                            subscriptionCapsule(value.label, value, ghost: false)
+                            subscriptionCapsule(displayMetricLabel(value.label), value, ghost: false)
                         }
                     }
 
@@ -5423,7 +5493,7 @@ struct ContentView: View {
             ForEach(values) { value in
                 let percent = subscriptionMode == .used ? value.used : value.remainingPercent
                 HStack(spacing: 6) {
-                    Text(value.label)
+                    Text(displayMetricLabel(value.label))
                         .font(.system(size: 9))
                         .foregroundStyle(.secondary)
                         .frame(width: 24, alignment: .leading)
@@ -5446,6 +5516,16 @@ struct ContentView: View {
                         .frame(width: 28, alignment: .trailing)
                 }
             }
+        }
+    }
+
+    private func displayMetricLabel(_ label: String) -> String {
+        guard L.isEnglish else { return label }
+        switch label {
+        case "周": return "Wk"
+        case "月": return "Mo"
+        case "日", "天": return "Day"
+        default: return label
         }
     }
 
@@ -5847,7 +5927,7 @@ struct ContentView: View {
                 .lineLimit(1)
                 .truncationMode(.middle)
                 .frame(width: 112, alignment: .leading)
-            Text(showCost ? UsageFormat.money(bucket.cost) : (saved > 0 ? "省 \(UsageFormat.money(saved))" : "—"))
+            Text(showCost ? UsageFormat.money(bucket.cost) : (saved > 0 ? "\(L.t("省", "saved")) \(UsageFormat.money(saved))" : "—"))
                 .font(.system(size: 12, weight: .semibold, design: .monospaced))
                 .monospacedDigit()
             Spacer()
@@ -5873,7 +5953,8 @@ struct ContentView: View {
     }
 
     private func rankingRow(_ rank: Int, _ api: ApiUsage) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 6) {
+        let saved = savedAmount(api.bucket)
+        return HStack(alignment: .firstTextBaseline, spacing: 5) {
             Text("\(rank)")
                 .font(.system(size: 9, weight: .bold, design: .rounded))
                 .foregroundStyle(rank == 1 ? Color.orange : Color.secondary)
@@ -5893,16 +5974,22 @@ struct ContentView: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 4)
-            Text(api.provider == "deepseek"
-                 ? UsageFormat.money(api.bucket.cost)
-                 : (savedAmount(api.bucket) > 0 ? "省 \(UsageFormat.money(savedAmount(api.bucket)))" : "—"))
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .monospacedDigit()
+            HStack(spacing: 2) {
+                Text(api.provider == "deepseek" || saved <= 0 ? "" : L.t("省", "saved"))
+                    .font(.system(size: L.isEnglish ? 8.5 : 11, weight: .semibold, design: .monospaced))
+                    .frame(width: L.isEnglish ? 28 : 11, alignment: .leading)
+                Text(api.provider == "deepseek"
+                     ? UsageFormat.money(api.bucket.cost)
+                     : (saved > 0 ? UsageFormat.money(saved) : "—"))
+                    .frame(width: 58, alignment: .trailing)
+            }
+            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+            .monospacedDigit()
             Text(UsageFormat.tokens(api.bucket.tokens))
                 .font(.system(size: 9))
                 .monospacedDigit()
                 .foregroundStyle(.tertiary)
-                .frame(width: 56, alignment: .trailing)
+                .frame(width: 46, alignment: .trailing)
         }
     }
 
@@ -6585,9 +6672,10 @@ struct ContentView: View {
 
             Spacer()
 
-            if subscriptions.activeSources.isEmpty {
+            if visibleSubscriptionSources.isEmpty {
                 Button {
                     balance.refresh(token: balanceAccount?.token, force: true)
+                    subscriptions.refresh(force: true)
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .font(.system(size: 9, weight: .semibold))
@@ -7794,7 +7882,7 @@ private struct PanelGlassBackground: View {
 
     var body: some View {
         ZStack {
-            PanelVisualEffect()
+            PanelVisualEffect(scheme: scheme)
             LinearGradient(
                 colors: scheme == .light
                     ? [Color.white.opacity(0.66), Color.white.opacity(0.50)]
@@ -7807,15 +7895,29 @@ private struct PanelGlassBackground: View {
 }
 
 private struct PanelVisualEffect: NSViewRepresentable {
+    let scheme: ColorScheme
+
     func makeNSView(context: Context) -> NSVisualEffectView {
         let view = NSVisualEffectView()
         view.material = .popover
         view.blendingMode = .behindWindow
         view.state = .active
+        view.wantsLayer = true
+        view.layer?.backgroundColor = NSColor.clear.cgColor
         return view
     }
 
-    func updateNSView(_ view: NSVisualEffectView, context: Context) {}
+    func updateNSView(_ view: NSVisualEffectView, context: Context) {
+        // 外观跟随 SwiftUI 的 colorScheme，避免系统外观变化后毛玻璃停在旧配色上。
+        let name: NSAppearance.Name = scheme == .dark ? .darkAqua : .aqua
+        if view.appearance?.name != name {
+            view.appearance = NSAppearance(named: name)
+        }
+        view.material = .popover
+        view.blendingMode = .behindWindow
+        view.state = .active
+        view.needsDisplay = true
+    }
 }
 
 struct DonationView: View {
@@ -9000,6 +9102,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopo
         }
 
         mainWindow?.title = "TokenPeek"
+        mainWindow?.appearance = AppearanceStore.current.appearance
+        AppearanceModel.shared.refreshSystemScheme()
         mainWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -9135,8 +9239,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopo
             view.layoutSubtreeIfNeeded()
             popover.contentSize = desiredPanelSize(view.fittingSize)
         }
+        popover.appearance = AppearanceStore.current.appearance
         popover.show(relativeTo: statusView.bounds, of: statusView, preferredEdge: .minY)
         NSApp.activate(ignoringOtherApps: true)
+        if let panelWindow = popover.contentViewController?.view.window {
+            panelWindow.appearance = AppearanceStore.current.appearance
+            panelWindow.isOpaque = false
+            panelWindow.backgroundColor = .clear
+        }
+        AppearanceModel.shared.refreshSystemScheme()
         popover.contentViewController?.view.window?.makeKey()
         popover.contentViewController?.view.window?.makeFirstResponder(nil)
         NotificationCenter.default.post(name: .dsUsageRefresh, object: nil)
