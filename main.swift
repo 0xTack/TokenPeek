@@ -8970,6 +8970,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopo
     private var mainWindow: NSWindow?
     private var settingsWindow: NSWindow?
     private var donationWindow: NSWindow?
+    private var popoverDismissMonitor: Any?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppearanceStore.apply(AppearanceStore.current)
@@ -9240,6 +9241,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopo
             popover.contentSize = desiredPanelSize(view.fittingSize)
         }
         popover.appearance = AppearanceStore.current.appearance
+        popover.behavior = .transient
+        NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: statusView.bounds, of: statusView, preferredEdge: .minY)
         NSApp.activate(ignoringOtherApps: true)
         if let panelWindow = popover.contentViewController?.view.window {
@@ -9250,10 +9253,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopo
         AppearanceModel.shared.refreshSystemScheme()
         popover.contentViewController?.view.window?.makeKey()
         popover.contentViewController?.view.window?.makeFirstResponder(nil)
+        startPopoverDismissMonitor()
         NotificationCenter.default.post(name: .dsUsageRefresh, object: nil)
     }
 
     func popoverDidClose(_ notification: Notification) {
+        stopPopoverDismissMonitor()
+    }
+
+    private func startPopoverDismissMonitor() {
+        stopPopoverDismissMonitor()
+        // 点其他 App / 桌面时，transient 弹窗有时收不到事件；用全局鼠标监听兜底。
+        popoverDismissMonitor = NSEvent.addGlobalMonitorForEvents(
+            matching: [.leftMouseDown, .rightMouseDown]
+        ) { [weak self] _ in
+            guard let self, self.popover.isShown else { return }
+            guard let window = self.popover.contentViewController?.view.window else { return }
+            if !window.frame.contains(NSEvent.mouseLocation) {
+                DispatchQueue.main.async {
+                    self.popover.performClose(nil)
+                }
+            }
+        }
+    }
+
+    private func stopPopoverDismissMonitor() {
+        if let monitor = popoverDismissMonitor {
+            NSEvent.removeMonitor(monitor)
+            popoverDismissMonitor = nil
+        }
     }
 
     private func resizePopover() {
