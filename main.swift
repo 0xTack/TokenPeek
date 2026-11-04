@@ -195,12 +195,14 @@ enum Theme {
 }
 
 enum AppIconChoice: String, CaseIterable {
+    case cat
     case retro
     case watercolor
     case classic
 
     var zh: String {
         switch self {
+        case .cat: return "奶油猫"
         case .retro: return "复古版画"
         case .watercolor: return "水彩治愈"
         case .classic: return "经典"
@@ -209,6 +211,7 @@ enum AppIconChoice: String, CaseIterable {
 
     var en: String {
         switch self {
+        case .cat: return "Cream Cat"
         case .retro: return "Retro"
         case .watercolor: return "Watercolor"
         case .classic: return "Classic"
@@ -218,7 +221,7 @@ enum AppIconChoice: String, CaseIterable {
 
 enum AppIconStore {
     static var choice: AppIconChoice {
-        AppIconChoice(rawValue: UserDefaults.standard.string(forKey: "appIcon") ?? "retro") ?? .retro
+        AppIconChoice(rawValue: UserDefaults.standard.string(forKey: "appIcon") ?? "cat") ?? .cat
     }
 
     static func set(_ choice: AppIconChoice) {
@@ -229,6 +232,8 @@ enum AppIconStore {
     static func apply() {
         let resource: (name: String, ext: String)
         switch choice {
+        case .cat:
+            resource = ("AppIcon-cat", "png")
         case .retro:
             resource = ("AppIcon-retro", "png")
         case .watercolor:
@@ -6767,7 +6772,7 @@ struct SettingsView: View {
     @AppStorage("showBalanceSection") private var showBalanceSection = true
     @AppStorage("showFooterSection") private var showFooterSection = true
     @AppStorage("autoCheckUpdates") private var autoCheckUpdates = true
-    @AppStorage("appIcon") private var appIconRaw = AppIconChoice.retro.rawValue
+    @AppStorage("appIcon") private var appIconRaw = AppIconChoice.cat.rawValue
     @AppStorage("statusRingStyle") private var ringStyleRaw = StatusRingStyle.soft.rawValue
     @AppStorage("autoICloudBackup") private var autoICloudBackup = false
 
@@ -7104,8 +7109,8 @@ struct SettingsView: View {
                         }
                     }
 
-                    Text(L.t("Dock 图标会立即切换；Finder 里的包图标固定为复古版画",
-                             "The Dock icon changes immediately; the bundle icon in Finder stays Retro"))
+                    Text(L.t("Dock 图标会立即切换；Finder 里的包图标固定为奶油猫",
+                             "The Dock icon changes immediately; the bundle icon in Finder stays Cream Cat"))
                         .font(.system(size: 9))
                         .foregroundStyle(.tertiary)
 

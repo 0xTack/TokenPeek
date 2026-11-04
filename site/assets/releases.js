@@ -1,33 +1,33 @@
 window.DEEPSEEK_RELEASE = {
-  "version": "1.8",
+  "version": "1.9",
   "date": "2026-11-04",
   "versions": {
-    "mac": "1.8"
+    "mac": "1.9"
   },
-  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.8/",
+  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.9/",
   "downloads": [
     {
       "id": "mac-arm64",
       "platform": "macOS",
       "name": "Apple Silicon",
       "arch": "arm64",
-      "version": "1.8",
+      "version": "1.9",
       "min": "macOS 14 Sonoma 或更高",
       "recommended": true,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.8-AppleSilicon.dmg",
-          "size": "4.2 MB",
-          "sha256": "883e8bb1e0146ef0ee97b4a8c3faa635746b607793049e1b0024c406b24b327e"
+          "file": "TokenPeek-1.9-AppleSilicon.dmg",
+          "size": "5.9 MB",
+          "sha256": "95a2b3104b53304c9eaed27f05909288e8c55eb8fcd73aa8cbeef06f78c23eb4"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.8-AppleSilicon.zip",
-          "size": "3.9 MB",
-          "sha256": "9031f497d135ad7e5f28b4d385107023d6b174958c09b5df369a458bbe66b0bc"
+          "file": "TokenPeek-1.9-AppleSilicon.zip",
+          "size": "5.5 MB",
+          "sha256": "c47862681fffbd1fdafb2064ce8fc2081c4e500abd673b0f799636e785fb678b"
         }
       ]
     },
@@ -36,28 +36,36 @@ window.DEEPSEEK_RELEASE = {
       "platform": "macOS",
       "name": "Intel",
       "arch": "x86_64",
-      "version": "1.8",
+      "version": "1.9",
       "min": "macOS 13 Ventura 或更高",
       "recommended": false,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.8-Intel.dmg",
-          "size": "4.3 MB",
-          "sha256": "e860597ee081632b146957206e98b0478483b14414bb0438f1992ee141f14cc9"
+          "file": "TokenPeek-1.9-Intel.dmg",
+          "size": "6.0 MB",
+          "sha256": "d56cf4f742373f1096e0491e5e61dfc5da5f4e4599e32ef0ea48ddbe83814188"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.8-Intel.zip",
-          "size": "3.9 MB",
-          "sha256": "a182c29d597743f15c28b8d87eb8bc033fd2b74f9283ff45240b2eec01627a90"
+          "file": "TokenPeek-1.9-Intel.zip",
+          "size": "5.6 MB",
+          "sha256": "3e79fe1be3c3151e98beb845dc73208e8acfceee751277404c788cc79b441242"
         }
       ]
     }
   ],
   "history": [
+    {
+      "version": "1.9",
+      "date": "2026-11-04",
+      "notes": [
+        "修复面板操作后点桌面空白处无法关闭的问题",
+        "新增「奶油猫」应用图标，并设为默认；设置里仍可切回复古版画 / 水彩 / 经典"
+      ]
+    },
     {
       "version": "1.8",
       "date": "2026-11-04",

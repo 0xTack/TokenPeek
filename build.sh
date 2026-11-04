@@ -29,7 +29,7 @@ swiftc \
 
 cp Info.plist "$APP/Contents/Info.plist"
 cp AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
-for icon in AppIcon-retro.png AppIcon-watercolor.png AppIcon-classic.icns; do
+for icon in AppIcon-cat.png AppIcon-retro.png AppIcon-watercolor.png AppIcon-classic.icns; do
   [ -f "$icon" ] && cp "$icon" "$APP/Contents/Resources/$icon"
 done
 if [ -d zh-Hans.lproj ]; then
