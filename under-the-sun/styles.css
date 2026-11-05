@@ -308,8 +308,9 @@ h3 {
 }
 
 @media (min-width: 900px) {
-  #install {
-    margin-left: -28px;
+  #install .section-head,
+  #install .install-grid {
+    margin-left: calc(50% - 50vw);
   }
 }
 
