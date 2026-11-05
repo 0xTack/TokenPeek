@@ -1,5 +1,7 @@
-<svg stroke="currentColor" stroke-width="0.45" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><g transform="translate(1.5 5.15) scale(0.016625) translate(-392 -608)"><g transform="translate(0.000000,2048.000000) scale(0.100000,-0.100000)"
-fill="currentColor" stroke="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56">
+  <rect x="0.5" y="0.5" width="55" height="55" rx="13" fill="#f3ead8" stroke="#d8cfc0"/>
+  <g transform="translate(4 4) scale(2)"><g transform="translate(1.5 5.15) scale(0.016625) translate(-392 -608)"><g transform="translate(0.000000,2048.000000) scale(0.100000,-0.100000)"
+fill="#1f2328" stroke="none">
 <path d="M4975 14295 c-16 -8 -42 -14 -57 -15 -17 0 -31 -8 -38 -20 -6 -11
 -17 -20 -25 -20 -8 0 -15 -8 -15 -19 0 -10 -9 -30 -20 -44 -23 -29 -33 -6937
 -9 -6937 5 0 17 -16 25 -35 9 -22 25 -40 41 -46 14 -5 32 -17 39 -27 19 -26
@@ -392,4 +394,5 @@ l-1115 0 -5 3306 c-5 3131 -6 3308 -22 3326 -10 11 -18 28 -18 39 0 64 -142
 -39 1567 -33 1577 6 3 10 12 19 20 19 8 0 17 9 20 20 3 11 12 20 20 20 9 0 17
 14 22 37 4 21 12 41 18 45 13 8 15 5286 3 5307 -5 8 -71 11 -217 11 l-209 0 0
 -2522z"/>
-</g></g></svg>
+</g></g></g>
+</svg>
