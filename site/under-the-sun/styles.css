@@ -553,7 +553,14 @@ h3 {
 }
 
 .install-grid:has(.install-block:only-child) .download-row {
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+#install .download-row .btn {
+  height: 46px;
+  padding: 0 26px;
+  border-radius: 10px;
+  font-size: 15px;
 }
 
 .install-block h3 {
