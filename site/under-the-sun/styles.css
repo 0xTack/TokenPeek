@@ -546,6 +546,10 @@ h3 {
   gap: 48px;
 }
 
+.install-grid:has(.install-block:only-child) {
+  grid-template-columns: minmax(0, 680px);
+}
+
 .install-block h3 {
   margin-bottom: 14px;
 }
