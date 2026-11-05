@@ -785,3 +785,7 @@ h3 {
   gap: 8px;
   margin: 16px 0 12px;
 }
+
+#install {
+  scroll-margin-top: 88px;
+}
