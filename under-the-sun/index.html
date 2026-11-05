@@ -38,7 +38,7 @@
           <a class="btn btn-primary" href="#install">开始使用</a>
           <a class="btn" href="#trace">看看它怎么溯源</a>
         </div>
-        <p class="hero-note">一个 Obsidian 插件 · 简单模式 · 完整模式需要可选后端 · 数据在自己的 vault</p>
+        <p class="hero-note">一个 Obsidian 插件 · 轻量模式 · 完整模式需要本地增强服务 · 数据在自己的 vault</p>
       </div>
 
       <div class="hero-visual" aria-label="合订本示意">
@@ -185,15 +185,15 @@
       <div class="section-head">
         <p class="eyebrow">04 / One plugin</p>
         <h2>一个插件，两种模式</h2>
-        <p class="section-lede">装一次插件。需要热榜和跟踪时，再装可选后端。</p>
+        <p class="section-lede">装一次插件。需要热榜和跟踪时，再装本地增强服务。</p>
       </div>
 
       <div class="edition-grid">
         <article class="edition edition-recommended">
           <span class="edition-badge">推荐</span>
-          <p class="edition-tag">完整模式 · macOS + 后端</p>
+          <p class="edition-tag">完整模式 · macOS + 增强服务</p>
           <h3>热榜、跟踪、判断簿</h3>
-          <p>Python 后端 + Obsidian 插件。适合愿意在电脑上装一次环境、想要完整中文热榜和跟踪能力的人。</p>
+          <p>本地增强服务 + Obsidian 插件。适合愿意在电脑上装一次环境、想要完整中文热榜和跟踪能力的人。</p>
           <ul>
             <li>多平台热榜 + RSS</li>
             <li>正文补全、聚类、打分</li>
@@ -205,7 +205,7 @@
         </article>
 
         <article class="edition">
-          <p class="edition-tag">简单模式</p>
+          <p class="edition-tag">轻量模式</p>
           <h3>RSS + AI + 日报</h3>
           <p>不依赖 Python，只读取你自己的 RSS。适合想直接从插件市场安装、轻量使用的人。</p>
           <ul>
@@ -213,9 +213,9 @@
             <li>每日 RSS 日报</li>
             <li>AI 解读与交流</li>
             <li>桌面与手机</li>
-            <li>不含热榜与跟踪（装后端后解锁）</li>
+            <li>不含热榜与跟踪（装增强服务后解锁）</li>
           </ul>
-          <a class="btn" href="#install">安装简单模式</a>
+          <a class="btn" href="#install">安装轻量模式</a>
         </article>
       </div>
     </section>
@@ -231,15 +231,15 @@
           <h3>完整模式（macOS，可选）</h3>
           <ol class="steps">
             <li>在 Obsidian 第三方插件里搜索 <strong>Under the Sun</strong>，安装并启用。</li>
-            <li>下载后端安装包，解压后双击 <code>install-backend.command</code>。</li>
+            <li>下载本地增强服务，解压后双击 <code>install-backend.command</code>。</li>
             <li>安装器会装好 Python 依赖、token 和后台服务。</li>
             <li>重启 Obsidian，插件会自动连接。</li>
           </ol>
           <p class="download-row">
-            <a class="btn btn-primary" href="downloads/UnderTheSun-Backend-0.4.1-macOS.zip" download>下载后端安装包</a>
+            <a class="btn btn-primary" href="downloads/UnderTheSun-Backend-0.4.1-macOS.zip" download>下载本地增强服务</a>
             <a class="btn" href="downloads/UnderTheSun-Backend-0.4.1-macOS.zip.sha256">SHA-256</a>
           </p>
-          <p class="install-note">只装后端，不覆盖插件。需要 Python 3.9+；定时任务由 launchd 负责。</p>
+          <p class="install-note">只装增强服务，不覆盖插件。需要 Python 3.9+；定时任务由 launchd 负责。</p>
           <p class="install-note">开源可审计 · 本地优先 · 无遥测 · <a href="https://github.com/0xTack/obsidian-under-the-sun" target="_blank" rel="noopener">查看源码</a></p>
         </div>
 
@@ -255,7 +255,7 @@
 
       <details>
         <summary>数据存在哪里？</summary>
-        <p>日报、跟踪笔记都在 vault 的 Markdown 里；完整模式的后端数据库和抓取缓存在本机，不会上传。</p>
+        <p>日报、跟踪笔记都在 vault 的 Markdown 里；本地增强服务数据库和抓取缓存在本机，不会上传。</p>
       </details>
       <details>
         <summary>AI 会替我做判断吗？</summary>
@@ -263,15 +263,15 @@
       </details>
       <details>
         <summary>手机上能抓取吗？</summary>
-        <p>没有后端时，手机只负责阅读和 AI；简单模式可以直接在插件内刷新 RSS。完整模式的抓取在电脑端后端完成。</p>
+        <p>没有本地增强服务时，手机只负责阅读和 AI；轻量模式可以直接在插件内刷新 RSS。完整模式的抓取在电脑端增强服务完成。</p>
       </details>
       <details>
-        <summary>简单模式和完整模式能同时开吗？</summary>
-        <p>它们是同一个插件的两种模式，不存在“同时装两个”。后端连上就是完整模式，连不上就是简单模式。</p>
+        <summary>轻量模式和完整模式能同时开吗？</summary>
+        <p>它们是同一个插件的两种模式，不存在“同时装两个”。本地增强服务连上就是完整模式，连不上就是轻量模式。</p>
       </details>
       <details>
         <summary>Windows 可以用吗？</summary>
-        <p>完整模式目前只提供 macOS 后端。Windows / Linux 先用简单模式，或手动运行 Python 后端。</p>
+        <p>完整模式目前只提供 macOS 本地增强服务。Windows / Linux 先用轻量模式，或手动运行 Python 增强服务。</p>
       </details>
       <details>
         <summary>为什么强调「合订本」？</summary>
