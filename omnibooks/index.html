@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OmniBooks 万卷书 · 把读过的书重新摆回书架</title>
-<meta name="description" content="OmniBooks 是一个 Obsidian 插件：苹果图书与微信读书双平台同步，分析阅读习惯，可选 AI 顾问，五种书架界面。免费开源，本地优先。">
+<meta name="description" content="OmniBooks 是一个 Obsidian 插件：苹果图书与微信读书双平台同步，分析阅读习惯，可选 AI 顾问，电脑 / iPad 支持四种书架界面，iPhone 保留封面墙与时间线。免费开源，本地优先。">
 <style>
   :root{
     --bg:#f7f4ee;--panel:#fffdf9;--ink:#1f2328;--muted:#6f6a61;--faint:#98928a;
@@ -208,12 +208,12 @@
       <div class="eyebrow">Obsidian Plugin · 免费开源</div>
       <h1>读过的书，<br>应该看得见。</h1>
       <p class="tagline">随处可读，一处留痕</p>
-      <p>把苹果图书和微信读书合并成一个书架，分析阅读习惯，需要时再让 AI 接话。五种界面，都为你读过的书服务。</p>
+      <p>把苹果图书和微信读书合并成一个书架，分析阅读习惯，需要时再让 AI 接话。四种界面，都为你读过的书服务。</p>
       <div class="cta">
         <a class="btn primary" href="#install">安装 OmniBooks</a>
         <a class="btn" href="https://github.com/0xTack" target="_blank" rel="noreferrer">GitHub</a>
       </div>
-      <div class="badges"><span>苹果 + 微信</span><span>阅读统计</span><span>AI 可选</span><span>五种界面</span><span>本地优先</span></div>
+      <div class="badges"><span>苹果 + 微信</span><span>阅读统计</span><span>AI 可选</span><span>四种界面</span><span>本地优先</span></div>
 
       <div class="cf">
         <div class="cf-title" id="cfTitle"></div>
@@ -237,7 +237,7 @@
             <div class="source"><span><b>微信读书</b><small>Agent 接口 · 含时长</small></span><span>76 本</span></div>
           </div>
           <div class="arrow">↓ 合并</div>
-          <div class="merged"><b>OmniBooks 书架</b><small>183 本 · 去重后统一排序</small></div>
+          <div class="merged"><b>OmniBooks 书架</b><small>180 本 · 去重后统一排序</small></div>
         </div>
       </div>
     </section>
@@ -292,15 +292,15 @@
     </section>
 
     <section id="layouts">
-      <div class="kicker">04 · 五种界面</div>
-      <h2 style="font-size:clamp(24px,3.2vw,34px)">同一批书，五种看法。</h2>
-      <p style="color:var(--muted);margin:12px 0 0;max-width:52ch">封面墙用来逛，卡片用来选，叠放用来读，唱片用来滑，时间线用来看趋势。点下面切换真实预览。</p>
+      <div class="kicker">04 · 四种界面</div>
+      <h2 style="font-size:clamp(24px,3.2vw,34px)">同一批书，四种看法。</h2>
+      <p style="color:var(--muted);margin:12px 0 0;max-width:52ch">封面墙用来逛，卡片用来选，唱片用来滑，时间线用来看趋势。点下面切换真实预览。</p>
+      <p style="color:var(--faint);margin:8px 0 0;font-size:13px">封面墙与时间线支持全平台；卡片与唱片仅电脑 / iPad。iPhone 目前只保留封面墙与时间线。</p>
       <div class="tabs" id="tabs">
         <button class="tab on" data-p="p-wall">封面墙</button>
         <button class="tab" data-p="p-disc">唱片</button>
         <button class="tab" data-p="p-time">时间线</button>
         <button class="tab" data-p="p-card">卡片</button>
-        <button class="tab" data-p="p-stack">叠放</button>
       </div>
       <p class="tab-desc" id="tabDesc"></p>
       <div class="panel on" id="p-wall"><div class="wall" id="wall"></div></div>
@@ -315,7 +315,6 @@
       <div class="panel" id="p-card">
         <div class="single" id="single"></div>
       </div>
-      <div class="panel" id="p-stack"><div class="stack" id="stack"></div></div>
     </section>
 
 
@@ -349,13 +348,13 @@
         <div class="more-item"><b>金句收藏</b><span>选中文字即可收藏，统一收进一个 Markdown 文件。</span></div>
         <div class="more-item"><b>搜索与筛选</b><span>书名、作者、进度、收藏、来源，一处切换。</span></div>
         <div class="more-item"><b>封面校正</b><span>自动透视校正，单本可手动微调。</span></div>
-        <div class="more-item"><b>手机可用</b><span>除苹果同步外，书架与阅读视图都能在手机打开。</span></div>
+        <div class="more-item"><b>手机可用</b><span>iPhone 只保留封面墙与时间线；阅读视图、微信读书同步仍可用，苹果图书同步由 Mac 中转。</span></div>
       </div>
     </section>
 
     <section class="install" id="install">
       <h2>三步装好</h2>
-      <p class="lead">已在 Obsidian 社区上架。打开设置 → 第三方插件 → 浏览，搜索 OmniBooks 直接安装。</p>
+      <p class="lead">最新版本 0.1.5。已在 Obsidian 社区上架。打开设置 → 第三方插件 → 浏览，搜索 OmniBooks 直接安装。</p>
       <div class="steps">
         <div class="step"><b>打开社区插件</b><span>设置 → 第三方插件 → 浏览。</span></div>
         <div class="step"><b>搜索 OmniBooks</b><span>在社区插件里搜索 <code>OmniBooks</code>，点安装。</span></div>
@@ -367,7 +366,7 @@
     <div class="privacy">
       <div><b>笔记在本地</b>所有书籍笔记都是 vault 里的 Markdown。</div>
       <div><b>苹果图书</b>只读本地数据库，不走网络。</div>
-      <div><b>微信读书</b>非公开接口，可能失效；Key 存本地。</div>
+      <div><b>微信读书</b>书架、划线与想法；Key 存本地。</div>
       <div><b>AI 可选</b>不配置也能用；请求直达服务商。</div>
     </div>
 
@@ -379,6 +378,7 @@
         </div>
         <div style="display:flex;gap:20px;flex-wrap:wrap">
           <a href="https://github.com/0xTack" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://afdian.com/a/tack123/plan" target="_blank" rel="noreferrer">支持作者</a>
           <a href="https://0xtack.github.io/TokenPeek/works.html" target="_blank" rel="noreferrer">作者作品</a>
           <a href="#install">安装</a>
         </div>
@@ -445,10 +445,6 @@ const meta=document.createElement("div");meta.className="meta";
 meta.innerHTML="<b>傲慢与偏见</b>简·奥斯汀<br>已读 · 62 条划线 · 阅读 6 小时 12 分";
 single.appendChild(meta);
 
-/* stack */
-const stack=document.getElementById("stack");
-[books[1],books[3],books[0]].forEach(b=>stack.appendChild(img(b)));
-
 /* coverflow */
 function initCoverflow(rail,titleEl){
   books.forEach(b=>{const c=document.createElement("div");c.className="cf-card";c.appendChild(img(b));rail.appendChild(c);});
@@ -502,8 +498,7 @@ const viewDesc={
  "p-wall":"<b>封面墙</b>：一眼看到全部封面，悬停提亮，适合随便逛逛。",
  "p-disc":"<b>唱片</b>：横向滑动，两侧封面按距离倾斜；可调角度与密度，像翻一叠唱片。",
  "p-time":"<b>时间线</b>：按阅读时间排列，年份月份钉在左上角，每天只标一次日期。",
- "p-card":"<b>卡片</b>：一次聚焦一本，左右滑动决定收藏或搁置，适合决定下一本读什么。",
- "p-stack":"<b>叠放</b>：当前书在最上面，带一句摘录，适合慢慢看一本。"
+ "p-card":"<b>卡片</b>：一次聚焦一本，左右滑动决定收藏或搁置，适合决定下一本读什么。"
 };
 const descEl=document.getElementById("tabDesc");
 descEl.innerHTML=viewDesc["p-wall"];
