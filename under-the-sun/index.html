@@ -272,15 +272,57 @@
           <h3>完整模式（macOS，可选）</h3>
           <ol class="steps">
             <li>在 Obsidian 第三方插件里搜索 <strong>Under the Sun</strong>，安装并启用。</li>
-            <li>下载本地增强服务，解压后双击 <code>install-backend.command</code>。</li>
-            <li>安装器会装好 Python 依赖、token 和后台服务。</li>
-            <li>重启 Obsidian，插件会自动连接。</li>
+            <li>下载本地增强服务，解压后双击 <code>① 双击我安装.command</code>。</li>
+            <li>如果找到多个笔记库，按提示输入 <code>1</code> 或 <code>2</code>，回车。</li>
+            <li>等 1–3 分钟，看到「安装完成 ✓」就好了。</li>
           </ol>
           <p class="download-row">
             <a class="btn btn-primary" href="downloads/UnderTheSun-Backend-2.0.1-macOS.zip" download>下载本地增强服务</a>
             <a class="btn" href="downloads/UnderTheSun-Backend-2.0.1-macOS.zip.sha256">SHA-256</a>
           </p>
-          <p class="install-note">只装增强服务，不覆盖插件。需要 Python 3.9+；定时任务由 launchd 负责。</p>
+
+          <details class="install-detail">
+            <summary>程序装到哪里？需要我自己选吗？</summary>
+            <p>不需要选，固定装在这里：</p>
+            <pre><code>~/Library/Application Support/UnderTheSun/backend</code></pre>
+            <p>macOS 不允许后台程序读取「下载」「桌面」「文稿」里的文件。放在上面这个位置，开机自动启动才能正常工作。装完之后，解压出来的安装文件夹可以整个删掉。</p>
+          </details>
+
+          <details class="install-detail">
+            <summary>黑色窗口里会问我什么？</summary>
+            <p>只会问一件事：把日报写进哪个 Obsidian 笔记库。</p>
+            <pre><code>找到多个笔记库，请选一个（输入数字后按回车）：
+  1) /Users/你的用户名/Documents/我的笔记库
+  2) /Users/你的用户名/Documents/工作笔记
+选择： 1</code></pre>
+            <p>如果只找到一个笔记库，或者只有一个装了插件的笔记库，它不会问，直接继续。</p>
+            <p>之后是固定流程，不用再操作：</p>
+            <pre><code>[1/6] 把程序复制到固定位置 ✓
+[2/6] 检查运行环境 ✓
+[3/6] 找到要写入的 Obsidian 笔记库 ✓
+[4/6] 安装运行环境（首次约 1–3 分钟）✓
+[5/6] 写入配置和访问密码 ✓
+[6/6] 设置开机自动启动 ✓
+
+后台服务已就绪 ✓  http://127.0.0.1:8765
+安装完成 ✓</code></pre>
+          </details>
+
+          <details class="install-detail">
+            <summary>macOS 提示「无法验证开发者」怎么办？</summary>
+            <p>这是苹果对未签名软件的统一拦截，不是病毒。</p>
+            <p>方法一：右键点 <code>① 双击我安装.command</code> → 选「打开」→ 再点一次「打开」。</p>
+            <p>方法二：系统设置 → 隐私与安全性 → 拉到最下面 → 点「仍要打开」→ 再双击一次。</p>
+          </details>
+
+          <details class="install-detail">
+            <summary>安装失败了怎么办？</summary>
+            <p>安装器会自己停下，不会假装成功。它会说明原因、打印最近日志，并停止刚装的后台服务，避免反复崩溃重启。</p>
+            <p>需要帮助时，把这个文件发给作者：</p>
+            <pre><code>~/Library/Application Support/UnderTheSun/backend/logs/backend.log</code></pre>
+          </details>
+
+          <p class="install-note">只装增强服务，不覆盖插件。需要 Python 3.9+；开机自动启动由 launchd 负责。</p>
           <p class="install-note">开源可审计 · 本地优先 · 无遥测 · <a href="https://github.com/0xTack/obsidian-under-the-sun" target="_blank" rel="noopener">查看源码</a></p>
         </div>
 
