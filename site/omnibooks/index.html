@@ -136,6 +136,8 @@
   .install{border-top:1px solid var(--line)}
   .install h2{font-size:clamp(22px,2.8vw,28px)}
   .install p.lead{color:var(--muted);margin:10px 0 24px}
+  .install .install-links{display:flex;gap:8px;justify-content:center;align-items:center;color:var(--muted);font-size:13px;margin-top:22px}
+  .install .install-links a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
   .step{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--panel)}
   .step:before{counter-increment:s;content:counter(s);display:block;color:var(--accent);font-family:"Songti SC",serif;margin-bottom:8px}
@@ -353,12 +355,13 @@
 
     <section class="install" id="install">
       <h2>三步装好</h2>
-      <p class="lead">当前通过 BRAT 内测安装 OmniBooks；上架 Obsidian 社区后，这里会直接换成市场链接。</p>
+      <p class="lead">已提交 Obsidian 社区审核。通过后可直接在社区插件里搜索 OmniBooks；现在可以先用 BRAT 或 GitHub Release 安装。</p>
       <div class="steps">
-        <div class="step"><b>先装 BRAT（安装器）</b><span>BRAT 只是用来装内测插件的工具，不是 OmniBooks；在社区插件里搜索 <code>BRAT</code> 安装。</span></div>
-        <div class="step"><b>添加 OmniBooks 仓库</b><span>命令面板执行 <code>BRAT: Add a beta plugin</code>，输入 OmniBooks 的仓库名。</span></div>
+        <div class="step"><b>先装 BRAT（安装器）</b><span>BRAT 只是用来装插件的工具，不是 OmniBooks；在社区插件里搜索 <code>BRAT</code> 安装。</span></div>
+        <div class="step"><b>添加 OmniBooks 仓库</b><span>命令面板执行 <code>BRAT: Add a beta plugin</code>，输入 <code>0xTack/OmniBooks</code>。</span></div>
         <div class="step"><b>启用插件</b><span>在第三方插件里启用 <code>OmniBooks</code>，点侧边栏图标。</span></div>
       </div>
+      <p class="install-links"><a href="https://github.com/0xTack/OmniBooks/releases/latest" target="_blank" rel="noreferrer">下载最新 Release</a><span>·</span><span>社区目录：审核中</span></p>
     </section>
 
     <div class="privacy">
