@@ -552,17 +552,6 @@ h3 {
   justify-content: center;
 }
 
-#install .section-head {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-#install .install-block {
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .install-grid:has(.install-block:only-child) .download-row {
   justify-content: center;
 }
