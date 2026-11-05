@@ -307,6 +307,12 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
+@media (min-width: 900px) {
+  #install {
+    margin-left: -28px;
+  }
+}
+
 .section-head {
   max-width: 720px;
   margin-bottom: 44px;
