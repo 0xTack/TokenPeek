@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Under the Sun · 朝闻天下</title>
-  <meta name="description" content="Under the Sun 是一个 Obsidian 插件：把每天的信息装订成一本可追溯的合订本，支持信息溯源、每日日报、跟踪时间线和 AI 解读。" />
+  <meta name="description" content="Under the Sun 是一个 Obsidian 插件：把每天的信息装订成一本可追溯的合订本，支持信息溯源、每日日报、跟踪时间线和 AI 判断式解读。" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -18,6 +18,7 @@
       <a href="#trace">信息溯源</a>
       <a href="#volume">合订本</a>
       <a href="#features">功能</a>
+      <a href="#ai-method">AI 方法</a>
       <a href="#versions">版本</a>
       <a href="#install">安装</a>
       <a href="#works">其他作品</a>
@@ -160,8 +161,8 @@
         </div>
         <div class="feature">
           <span class="feature-num">03</span>
-          <h3>AI 深度解读</h3>
-          <p>事实、报道评价、核心矛盾、反方与判断，明确区分材料与推断。</p>
+          <h3>AI 判断式解读</h3>
+          <p>不是问答框。它按固定方法拆解事实、信源、矛盾、利益、反方与可证伪条件。</p>
         </div>
         <div class="feature">
           <span class="feature-num">04</span>
@@ -175,8 +176,49 @@
         </div>
         <div class="feature">
           <span class="feature-num">06</span>
-          <h3>AI 可选</h3>
-          <p>用自己的 API Key；不开启 AI 也能正常读报、跟踪和归档。</p>
+          <h3>AI 可选，不替你裁决</h3>
+          <p>用自己的 API Key；AI 只给出可检验的解读，不参与排序，最终判断由你确认。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ai-method" data-reveal>
+      <div class="section-head">
+        <p class="eyebrow">AI / Method</p>
+        <h2>AI 不是问答框，是一套判断流程</h2>
+        <p class="section-lede">它不替你下结论，而是把材料拆到可以检验。</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature">
+          <span class="feature-num">01</span>
+          <h3>事实 / 推断 / 判断分层</h3>
+          <p>只把材料中能确定的部分写成事实；推断和判断分开写，信息不足时明确标注「尚不清楚」。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">02</span>
+          <h3>信源与报道质量</h3>
+          <p>看信源是否单一、是否缺关键背景、标题是否夸大，而不是只看措辞是否激烈。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">03</span>
+          <h3>核心矛盾与利益</h3>
+          <p>找出真正的冲突：谁获利、谁承担成本、谁有决定权、谁没有发言权。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">04</span>
+          <h3>反方与可证伪条件</h3>
+          <p>给出反对这个判断的最强理由，以及什么新事实能推翻它，而不是只给一个结论。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">05</span>
+          <h3>判断卡与证据</h3>
+          <p>把判断写成可复核的 claim、确认条件、反证条件和置信度；后续证据自动标为支持、反驳或无关。</p>
+        </div>
+        <div class="feature">
+          <span class="feature-num">06</span>
+          <h3>AI 不参与排序</h3>
+          <p>排序只看平台热度、跨源数量和新鲜度；AI 负责拆解材料，不负责决定哪条新闻更重要。</p>
         </div>
       </div>
     </section>
@@ -259,7 +301,7 @@
       </details>
       <details>
         <summary>AI 会替我做判断吗？</summary>
-        <p>不会。AI 负责整理材料、给出可检验的解读；排序和取舍仍按来源、热度和时间，不交给模型。</p>
+        <p>不会。AI 按固定流程拆解材料：事实/推断/判断分层、信源质量、核心矛盾、利益与权力、反方与可证伪条件。它给出的是可检验的解读，排序仍按来源、热度和时间，最终判断由你确认。</p>
       </details>
       <details>
         <summary>手机上能抓取吗？</summary>
