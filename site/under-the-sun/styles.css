@@ -513,7 +513,8 @@ h3 {
 
 .edition-recommended:hover .edition-badge {
   transform: scale(1.06);
-  background: var(--ink);
+  background: var(--red);
+  box-shadow: 0 4px 14px rgba(178, 58, 47, 0.32);
 }
 
 .edition-tag {
