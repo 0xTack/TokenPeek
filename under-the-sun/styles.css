@@ -544,12 +544,12 @@ h3 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
-  justify-content: center;
+  justify-content: start;
 }
 
 .install-grid:has(.install-block:only-child) {
   grid-template-columns: minmax(0, 680px);
-  justify-content: center;
+  justify-content: start;
 }
 
 .install-grid:has(.install-block:only-child) .download-row {
