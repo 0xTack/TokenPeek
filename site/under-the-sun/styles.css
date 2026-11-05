@@ -582,7 +582,7 @@ h3 {
 }
 
 .download-row + .install-detail {
-  margin-top: 16px;
+  margin-top: 32px;
 }
 
 .install-detail + .install-note {
