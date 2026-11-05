@@ -310,13 +310,17 @@ h3 {
 @media (min-width: 900px) {
   #install .section-head,
   #install .install-grid {
-    margin-left: calc(50% - 50vw);
+    margin-left: calc(50% - 50vw) !important;
   }
-}
 
-#install .install-block {
-  margin-left: 0;
-  margin-right: 0;
+  #install .install-grid {
+    display: block !important;
+  }
+
+  #install .install-block {
+    margin: 0 !important;
+    max-width: 680px;
+  }
 }
 
 .section-head {
