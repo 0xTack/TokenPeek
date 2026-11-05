@@ -566,15 +566,27 @@ h3 {
 }
 
 .install-note {
-  margin: 0;
+  margin: 16px 0 0;
   font-size: 12px;
   color: var(--muted);
 }
 
+.install-note + .install-note {
+  margin-top: 6px;
+}
+
 .install-detail {
-  margin-top: 10px;
+  margin-top: 12px;
   border-top: 1px solid var(--line);
-  padding-top: 10px;
+  padding: 14px 0 2px;
+}
+
+.download-row + .install-detail {
+  margin-top: 16px;
+}
+
+.install-detail + .install-note {
+  margin-top: 14px;
 }
 
 .install-detail summary {
@@ -832,7 +844,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 16px 0 12px;
+  margin: 18px 0 6px;
 }
 
 #install {
