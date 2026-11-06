@@ -4409,7 +4409,7 @@ struct SubscriptionSource: Codable, Identifiable, Equatable {
     }
 }
 
-struct SubscriptionMetricValue: Identifiable, Equatable {
+struct SubscriptionMetricValue: Identifiable, Equatable, Codable {
     let id: UUID
     let label: String
     let usedPercent: Double?
@@ -4434,7 +4434,7 @@ struct SubscriptionMetricValue: Identifiable, Equatable {
     }
 }
 
-struct SubscriptionResult {
+struct SubscriptionResult: Codable {
     let values: [SubscriptionMetricValue]
     let error: String?
     let fetchedAt: Date
@@ -4587,13 +4587,24 @@ final class SubscriptionStore: ObservableObject {
     private var lastFetch: [UUID: Date] = [:]
     private let minimumInterval: TimeInterval = 60
 
+    private struct CachedEntry: Codable {
+        let sourceID: UUID
+        let result: SubscriptionResult
+    }
+
     static var fileURL: URL {
         FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Application Support/DeepSeekCost/subscriptions.json")
     }
 
+    private static var cacheURL: URL {
+        FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support/DeepSeekCost/subscription-cache.json")
+    }
+
     init() {
         reload()
+        loadCache()
     }
 
     var activeSources: [SubscriptionSource] {
@@ -4617,6 +4628,27 @@ final class SubscriptionStore: ObservableObject {
         try? data.write(to: Self.fileURL, options: .atomic)
     }
 
+    private func loadCache() {
+        guard let data = try? Data(contentsOf: Self.cacheURL),
+              let entries = try? JSONDecoder().decode([CachedEntry].self, from: data) else { return }
+        let ids = Set(activeSources.map { $0.id })
+        for entry in entries where ids.contains(entry.sourceID) {
+            results[entry.sourceID] = entry.result
+        }
+    }
+
+    private func saveCache() {
+        let entries = results.compactMap { id, result in
+            result.values.isEmpty ? nil : CachedEntry(sourceID: id, result: result)
+        }
+        guard let data = try? JSONEncoder().encode(entries) else { return }
+        try? FileManager.default.createDirectory(
+            at: Self.cacheURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try? data.write(to: Self.cacheURL, options: .atomic)
+    }
+
     func add(_ source: SubscriptionSource) {
         sources.append(source)
         refresh(sourceID: source.id, force: true)
@@ -4626,6 +4658,7 @@ final class SubscriptionStore: ObservableObject {
         sources.removeAll { $0.id == id }
         results[id] = nil
         lastFetch[id] = nil
+        saveCache()
     }
 
     func refresh(force: Bool = false) {
@@ -4642,7 +4675,22 @@ final class SubscriptionStore: ObservableObject {
         lastFetch[sourceID] = Date()
         SubscriptionLoader.fetch(source) { [weak self] result in
             DispatchQueue.main.async {
-                self?.results[sourceID] = result
+                guard let self else { return }
+                if result.values.isEmpty,
+                   let previous = self.results[sourceID],
+                   !previous.values.isEmpty {
+                    // 请求失败时保留上次成功的数据，避免打开面板时订阅信息突然消失
+                    self.results[sourceID] = SubscriptionResult(
+                        values: previous.values,
+                        error: result.error,
+                        fetchedAt: previous.fetchedAt
+                    )
+                } else {
+                    self.results[sourceID] = result
+                    if !result.values.isEmpty {
+                        self.saveCache()
+                    }
+                }
             }
         }
     }
@@ -6685,6 +6733,8 @@ struct ContentView: View {
                     Image(systemName: "arrow.clockwise")
                         .font(.system(size: 9, weight: .semibold))
                         .foregroundStyle(.secondary)
+                        .frame(width: 16, height: 16)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .help("刷新余额")
@@ -6700,7 +6750,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.small)
-                .padding(.trailing, 16)
+                .padding(.trailing, visibleSubscriptionSources.isEmpty ? 40 : 16)
                 .transition(.opacity)
             }
         }

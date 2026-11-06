@@ -1,33 +1,33 @@
 window.DEEPSEEK_RELEASE = {
-  "version": "1.9",
-  "date": "2026-11-04",
+  "version": "1.10",
+  "date": "2026-11-06",
   "versions": {
-    "mac": "1.9"
+    "mac": "1.10"
   },
-  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.9/",
+  "base": "https://github.com/0xTack/TokenPeek/releases/download/v1.10/",
   "downloads": [
     {
       "id": "mac-arm64",
       "platform": "macOS",
       "name": "Apple Silicon",
       "arch": "arm64",
-      "version": "1.9",
+      "version": "1.10",
       "min": "macOS 14 Sonoma 或更高",
       "recommended": true,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.9-AppleSilicon.dmg",
+          "file": "TokenPeek-1.10-AppleSilicon.dmg",
           "size": "5.9 MB",
-          "sha256": "95a2b3104b53304c9eaed27f05909288e8c55eb8fcd73aa8cbeef06f78c23eb4"
+          "sha256": "c091e73abe8163ac702291b1d544562e01e8a8231bd92d0061f36d1def8e810b"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.9-AppleSilicon.zip",
+          "file": "TokenPeek-1.10-AppleSilicon.zip",
           "size": "5.5 MB",
-          "sha256": "c47862681fffbd1fdafb2064ce8fc2081c4e500abd673b0f799636e785fb678b"
+          "sha256": "cbf02b2d85ebaaab05abdf1c6e5d96681f31d3a55edf928a6554fb2191c8ba3c"
         }
       ]
     },
@@ -36,28 +36,36 @@ window.DEEPSEEK_RELEASE = {
       "platform": "macOS",
       "name": "Intel",
       "arch": "x86_64",
-      "version": "1.9",
+      "version": "1.10",
       "min": "macOS 13 Ventura 或更高",
       "recommended": false,
       "files": [
         {
           "type": "dmg",
           "label": "下载 .dmg",
-          "file": "TokenPeek-1.9-Intel.dmg",
+          "file": "TokenPeek-1.10-Intel.dmg",
           "size": "6.0 MB",
-          "sha256": "d56cf4f742373f1096e0491e5e61dfc5da5f4e4599e32ef0ea48ddbe83814188"
+          "sha256": "fb63de3fb3ba34c111136b994c9dbcfb9066eb291e945e110b5165326d7fc1ac"
         },
         {
           "type": "zip",
           "label": "下载 .zip",
-          "file": "TokenPeek-1.9-Intel.zip",
+          "file": "TokenPeek-1.10-Intel.zip",
           "size": "5.6 MB",
-          "sha256": "3e79fe1be3c3151e98beb845dc73208e8acfceee751277404c788cc79b441242"
+          "sha256": "11c508abf48144434aee3c2f87f6ae1541ae8eb487759cf1673b6c569edfc3a9"
         }
       ]
     }
   ],
   "history": [
+    {
+      "version": "1.10",
+      "date": "2026-11-06",
+      "notes": [
+        "订阅请求失败或超时时保留上次成功的数据，并在启动时读取本地缓存，订阅信息不再突然消失",
+        "修复订阅隐藏时余额行的「充值」与刷新按钮重叠、刷新点不到的问题"
+      ]
+    },
     {
       "version": "1.9",
       "date": "2026-11-04",
